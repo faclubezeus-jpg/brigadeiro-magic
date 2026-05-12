@@ -8,6 +8,11 @@ const router: IRouter = Router();
 
 const UPLOADS_DIR = join(process.cwd(), "public", "uploads");
 
+const ALLOWED_EXTENSIONS = new Set([
+  ".png", ".jpg", ".jpeg", ".gif", ".webp",
+  ".mp4", ".mov", ".webm", ".ogg",
+]);
+
 router.post("/upload", async (req, res): Promise<void> => {
   const parsed = UploadImageBody.safeParse(req.body);
   if (!parsed.success) {
@@ -17,10 +22,17 @@ router.post("/upload", async (req, res): Promise<void> => {
 
   const { data, filename } = parsed.data;
 
-  const base64Data = data.replace(/^data:image\/\w+;base64,/, "");
+  // Strip base64 prefix (image or video)
+  const base64Data = data.replace(/^data:[^;]+;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
 
-  const ext = extname(filename) || ".png";
+  const ext = extname(filename).toLowerCase() || ".png";
+
+  if (!ALLOWED_EXTENSIONS.has(ext)) {
+    res.status(400).json({ error: `Formato não suportado: ${ext}. Use PNG, JPG, MP4 ou MOV.` });
+    return;
+  }
+
   const safeFilename = `${randomUUID()}${ext}`;
 
   await mkdir(UPLOADS_DIR, { recursive: true });

@@ -4,8 +4,9 @@ import { z } from "zod/v4";
 
 export const siteSettingsTable = pgTable("site_settings", {
   id: serial("id").primaryKey(),
-  shopName: varchar("shop_name", { length: 255 }).notNull().default("Docinho & Cia"),
+  shopName: varchar("shop_name", { length: 255 }).notNull().default("Docinho O Docinho"),
   logoUrl: text("logo_url"),
+  heroVideoUrl: text("hero_video_url"),
   primaryColor: varchar("primary_color", { length: 50 }).notNull().default("#F4A7B9"),
   secondaryColor: varchar("secondary_color", { length: 50 }).notNull().default("#E8D5F5"),
   accentColor: varchar("accent_color", { length: 50 }).notNull().default("#F4D03F"),

@@ -1,4 +1,4 @@
-# Docinho & Cia — Confeitaria Premium
+# Docinho O Docinho — Confeitaria Premium
 
 Site completo para confeitaria artesanal premium com painel administrativo.
 
@@ -25,31 +25,39 @@ Site completo para confeitaria artesanal premium com painel administrativo.
 ## Where things live
 
 - `artifacts/doce-site/` — React + Vite frontend
-  - `src/App.tsx` — routing (/, /admin, /admin/dashboard)
+  - `src/App.tsx` — routing (/, /admin, /admin/dashboard), CartProvider wraps everything
   - `src/pages/home.tsx` — full homepage with all sections
   - `src/pages/admin-login.tsx` — admin login page (/admin)
   - `src/pages/admin-dashboard.tsx` — full admin panel (/admin/dashboard)
+  - `src/context/CartContext.tsx` — shopping cart state + WhatsApp message builder
+  - `src/components/CartSidebar.tsx` — sliding cart panel
+  - `src/components/CartButton.tsx` — floating cart button (unused, navbar has cart)
   - `src/components/effects/` — CustomCursor, RainAnimation
-  - `src/components/layout/` — Navbar, Footer
-  - `src/components/sections/` — HeroSection, HighlightsCarousel, SweetsGrid, CakesSlider, KitsGrid, AboutSection, TestimonialsCarousel, ContactSection
+  - `src/components/layout/` — Navbar (with cart icon), Footer (with admin link)
+  - `src/components/sections/` — HeroSection (video bg), HighlightsCarousel (MP4 support), SweetsGrid (add to cart), CakesSlider (add to cart), KitsGrid (add to cart), AboutSection, TestimonialsCarousel, ContactSection (WhatsApp checkout)
   - `src/index.css` — theme (rose-gold/lavender palette, Playfair Display + Nunito)
+  - `public/videos/hero.mp4` — default hero background video
 - `artifacts/api-server/` — Express 5 API server
   - `src/routes/` — settings, sections, sweets, cakes, kits, highlights, testimonials, admin, upload
   - `src/app.ts` — express-session + CORS + static uploads
-- `lib/db/src/schema/` — Drizzle ORM schema (7 tables)
-- `lib/api-spec/openapi.yaml` — OpenAPI spec (source of truth for API contract)
+- `lib/db/src/schema/` — Drizzle ORM schema (7 tables, settings has heroVideoUrl)
+- `lib/api-spec/openapi.yaml` — OpenAPI spec (source of truth, has heroVideoUrl)
 - `lib/api-zod/` — generated Zod schemas from OpenAPI
 - `lib/api-client-react/` — generated React Query hooks from OpenAPI
 
 ## Product
 
-- Full premium confeitaria website for "Docinho & Cia"
-- Brigadeiro custom mouse cursor + entry rain animation
-- Parallax hero with interactive mouse-driven holographic background
-- Sections: Destaques (carousel), Docinhos (grid), Bolos (auto-scroll slider), Kits (cards + WhatsApp), Sobre (animated toggle), Depoimentos (carousel), Contato
+- Full premium confeitaria website for "Docinho O Docinho"
+- Brigadeiro custom mouse cursor + entry rain animation (brigadeiros + stars fall from sky, disappear after 3.5s)
+- VIDEO BACKGROUND in hero section (default: /videos/hero.mp4, editable from admin)
+- Mouse-reactive holographic overlay on hero
+- Sections: Destaques (carousel, supports MP4), Docinhos (grid + add-to-cart), Bolos (auto-scroll slider + add-to-cart), Kits (cards + add-to-cart + WhatsApp), Sobre, Depoimentos, Contato
+- Shopping cart: sidebar with item list, quantity controls, WhatsApp checkout with full order message
 - Floating WhatsApp button + WhatsApp CTAs everywhere
 - Admin panel at /admin — login: "docinho doce" / "docinho digital 321"
-- Full CRUD for: site settings, sweets, cakes, kits, highlights, testimonials
+- Admin link visible in footer ("Área Admin" button)
+- Full CRUD for: site settings (incl. logo upload + hero video upload), sweets, cakes, kits, highlights, testimonials
+- All galleries accept PNG, JPG, and MP4 uploads
 
 ## Architecture decisions
 
@@ -57,10 +65,15 @@ Site completo para confeitaria artesanal premium com painel administrativo.
 - Session-based auth for admin (express-session, SESSION_SECRET env var)
 - Placeholder data fallback in all sections when DB is empty
 - Custom cursor forced via `cursor: none !important` on all elements
-- Holographic BG uses CSS animation + mouse-reactive JS transforms
+- Shopping cart is client-side state only (CartContext), no backend needed
+- WhatsApp checkout message built from cart items with name, price, quantity
+- Upload route accepts: .png .jpg .jpeg .gif .webp .mp4 .mov .webm .ogg
+- Hero video served from Vite public folder at /videos/hero.mp4 (default)
+- Admin can upload a new video which gets stored in /api/uploads/
 
 ## User preferences
 
+- Company name: "Docinho O Docinho" (CORRECT name, not "Docinho & Cia")
 - Admin credentials: login = "docinho doce", password = "docinho digital 321"
 - Custom brigadeiro emoji cursor (🍫) throughout site
 - Rose-gold (#F4A7B9) + lavender (#E8D5F5) + gold (#F4D03F) color palette
@@ -72,6 +85,8 @@ Site completo para confeitaria artesanal premium com painel administrativo.
 - Admin session uses express-session; CORS must use `credentials: true`
 - DB push required after any schema changes: `pnpm --filter @workspace/db run push`
 - Static uploads served at `/api/uploads/` via express.static
+- After editing openapi.yaml, always run codegen: `pnpm --filter @workspace/api-spec run codegen`
+- heroVideoUrl is stored in site_settings table; default video is served from doce-site public folder
 
 ## Pointers
 

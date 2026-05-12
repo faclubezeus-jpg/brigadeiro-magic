@@ -8,6 +8,8 @@ import AdminLoginPage from "@/pages/admin-login";
 import AdminDashboardPage from "@/pages/admin-dashboard";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { RainAnimation } from "@/components/effects/RainAnimation";
+import { CartProvider } from "@/context/CartContext";
+import { CartSidebar } from "@/components/CartSidebar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,12 +35,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <CustomCursor />
-        <RainAnimation />
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
+        <CartProvider>
+          <CustomCursor />
+          <RainAnimation />
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Router />
+          </WouterRouter>
+          <CartSidebar />
+          <Toaster />
+        </CartProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

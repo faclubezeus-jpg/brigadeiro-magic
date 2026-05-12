@@ -21,6 +21,7 @@ export const GetSettingsResponse = zod.object({
   id: zod.number(),
   shopName: zod.string(),
   logoUrl: zod.string().nullable(),
+  heroVideoUrl: zod.string().nullish(),
   primaryColor: zod.string(),
   secondaryColor: zod.string(),
   accentColor: zod.string(),
@@ -40,6 +41,7 @@ export const GetSettingsResponse = zod.object({
 export const UpdateSettingsBody = zod.object({
   shopName: zod.string().optional(),
   logoUrl: zod.string().nullish(),
+  heroVideoUrl: zod.string().nullish(),
   primaryColor: zod.string().optional(),
   secondaryColor: zod.string().optional(),
   accentColor: zod.string().optional(),
@@ -57,6 +59,7 @@ export const UpdateSettingsResponse = zod.object({
   id: zod.number(),
   shopName: zod.string(),
   logoUrl: zod.string().nullable(),
+  heroVideoUrl: zod.string().nullish(),
   primaryColor: zod.string(),
   secondaryColor: zod.string(),
   accentColor: zod.string(),

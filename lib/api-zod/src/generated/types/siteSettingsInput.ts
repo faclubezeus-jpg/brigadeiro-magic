@@ -10,6 +10,8 @@ export interface SiteSettingsInput {
   shopName?: string;
   /** @nullable */
   logoUrl?: string | null;
+  /** @nullable */
+  heroVideoUrl?: string | null;
   primaryColor?: string;
   secondaryColor?: string;
   accentColor?: string;
