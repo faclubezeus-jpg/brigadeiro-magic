@@ -1,0 +1,84 @@
+Crie um site completo para uma loja de doces finos, com design fofo, elegante e chique, estilo confeitaria premium. O site deve ter um painel de administração (área DM) acessível por um botão discreto no rodapé, permitindo total edição do conteúdo.
+
+ACESSO À ÁREA DM:
+Login: docinho doce
+
+Senha: docinho digital 321
+
+Botão de acesso localizado no rodapé do site, pequeno e discreto
+
+SEÇÕES EDITÁVEIS DA HOME:
+Todas as seções devem ser totalmente editáveis pela área DM, com opção de ocultar/mostrar cada seção individualmente e possibilidade de reordenar as seções arrastando para cima e para baixo.
+
+Header/Cabeçalho: Nome da loja editável, logo editável, menu de navegação
+
+Banner Principal: Frase principal editável, foto de fundo editável, texto secundário editável
+
+Galeria de Destaques: Slider/carrossel automático com 4 a 6 fotos de docinhos, todas as fotos editáveis, texto de cada slide editável
+
+Seção "Nossos Docinhos": Galeria em grid com fotos dos doces individuais, cada foto e descrição editável, com opção de adicionar/remover itens
+
+Galeria de Bolos: Seção exclusiva para bolos, com galeria slider automática horizontal, fotos e nomes dos bolos editáveis, opção de adicionar/remover bolos
+
+Galeria de Kits: Seção dedicada a kits e combos, layout em grid elegante, cada kit com foto, nome, descrição e preço editáveis
+
+Seção Sobre Nós: Texto totalmente editável, foto editável
+
+Depoimentos: Carrossel de depoimentos, cada depoimento com foto, nome e texto editáveis
+
+Contato/WhatsApp: Número editável, mensagem personalizada editável
+
+Rodapé: Redes sociais editáveis, endereço editável, telefone editável, textos editáveis
+
+FUNCIONALIDADES DA ÁREA DM:
+Editor visual de cada seção
+
+Upload de imagens para cada galeria
+
+Criar novas seções personalizadas
+
+Criar novas galerias com nomes personalizados
+
+Ocultar/Exibir qualquer seção do site
+
+Reordenar seções arrastando (drag and drop)
+
+Editar nome do site, logo, cores e fontes
+
+Editar TODOS os textos do site
+
+Gerenciar fotos de cada galeria
+
+ESTILO VISUAL:
+Paleta de cores suaves e elegantes (tons pastel, rosa claro, dourado, creme)
+
+Design minimalista e sofisticado
+
+Fontes elegantes (estilo serif ou script para títulos)
+
+Cantos arredondados nos botões e cards
+
+Sombras suaves
+
+Ícones delicados
+
+Responsivo para mobile
+
+Animações suaves e transições elegantes
+
+Efeito hover refinado nos elementos interativos
+
+REQUISITOS TÉCNICOS:
+Galerias com slider automático (autoplay)
+
+Carrosséis com navegação por dots ou setas
+
+Carregamento otimizado de imagens
+
+Sistema de login seguro para área DM
+
+Armazenamento de dados e imagens
+
+Site totalmente responsivo
+
+SEO amigável

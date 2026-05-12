@@ -1,22 +1,38 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API para confeitaria premium Docinho & Cia
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: settings
+    description: Site settings
+  - name: sections
+    description: Site sections management
+  - name: sweets
+    description: Docinhos (individual sweets)
+  - name: cakes
+    description: Bolos (cakes gallery)
+  - name: kits
+    description: Kits and combos
+  - name: highlights
+    description: Galeria de destaques (slider)
+  - name: testimonials
+    description: Depoimentos
+  - name: admin
+    description: Admin authentication
+  - name: upload
+    description: Image upload
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +40,927 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get all site settings
+      responses:
+        "200":
+          description: Site settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update site settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteSettingsInput"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteSettings"
+
+  /sections:
+    get:
+      operationId: getSections
+      tags: [sections]
+      summary: Get all sections ordered
+      responses:
+        "200":
+          description: List of sections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Section"
+    post:
+      operationId: createSection
+      tags: [sections]
+      summary: Create a custom section
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SectionInput"
+      responses:
+        "201":
+          description: Created section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Section"
+
+  /sections/reorder:
+    put:
+      operationId: reorderSections
+      tags: [sections]
+      summary: Reorder sections via drag and drop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReorderInput"
+      responses:
+        "200":
+          description: Sections reordered
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Section"
+
+  /sections/{id}:
+    put:
+      operationId: updateSection
+      tags: [sections]
+      summary: Update a section content
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SectionUpdate"
+      responses:
+        "200":
+          description: Updated section
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Section"
+    delete:
+      operationId: deleteSection
+      tags: [sections]
+      summary: Delete a custom section
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /sweets:
+    get:
+      operationId: getSweets
+      tags: [sweets]
+      summary: List all docinhos
+      responses:
+        "200":
+          description: List of sweets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sweet"
+    post:
+      operationId: createSweet
+      tags: [sweets]
+      summary: Add a new sweet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SweetInput"
+      responses:
+        "201":
+          description: Created sweet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sweet"
+
+  /sweets/{id}:
+    put:
+      operationId: updateSweet
+      tags: [sweets]
+      summary: Update a sweet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SweetUpdate"
+      responses:
+        "200":
+          description: Updated sweet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sweet"
+    delete:
+      operationId: deleteSweet
+      tags: [sweets]
+      summary: Delete a sweet
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cakes:
+    get:
+      operationId: getCakes
+      tags: [cakes]
+      summary: List all cakes
+      responses:
+        "200":
+          description: List of cakes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cake"
+    post:
+      operationId: createCake
+      tags: [cakes]
+      summary: Add a new cake
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CakeInput"
+      responses:
+        "201":
+          description: Created cake
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cake"
+
+  /cakes/{id}:
+    put:
+      operationId: updateCake
+      tags: [cakes]
+      summary: Update a cake
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CakeUpdate"
+      responses:
+        "200":
+          description: Updated cake
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cake"
+    delete:
+      operationId: deleteCake
+      tags: [cakes]
+      summary: Delete a cake
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /kits:
+    get:
+      operationId: getKits
+      tags: [kits]
+      summary: List all kits
+      responses:
+        "200":
+          description: List of kits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Kit"
+    post:
+      operationId: createKit
+      tags: [kits]
+      summary: Add a new kit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KitInput"
+      responses:
+        "201":
+          description: Created kit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Kit"
+
+  /kits/{id}:
+    put:
+      operationId: updateKit
+      tags: [kits]
+      summary: Update a kit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KitUpdate"
+      responses:
+        "200":
+          description: Updated kit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Kit"
+    delete:
+      operationId: deleteKit
+      tags: [kits]
+      summary: Delete a kit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /highlights:
+    get:
+      operationId: getHighlights
+      tags: [highlights]
+      summary: List all highlight slides
+      responses:
+        "200":
+          description: List of highlights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Highlight"
+    post:
+      operationId: createHighlight
+      tags: [highlights]
+      summary: Add a highlight slide
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HighlightInput"
+      responses:
+        "201":
+          description: Created highlight
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Highlight"
+
+  /highlights/{id}:
+    put:
+      operationId: updateHighlight
+      tags: [highlights]
+      summary: Update a highlight
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HighlightUpdate"
+      responses:
+        "200":
+          description: Updated highlight
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Highlight"
+    delete:
+      operationId: deleteHighlight
+      tags: [highlights]
+      summary: Delete a highlight
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /testimonials:
+    get:
+      operationId: getTestimonials
+      tags: [testimonials]
+      summary: List all testimonials
+      responses:
+        "200":
+          description: List of testimonials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Testimonial"
+    post:
+      operationId: createTestimonial
+      tags: [testimonials]
+      summary: Add a testimonial
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestimonialInput"
+      responses:
+        "201":
+          description: Created testimonial
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Testimonial"
+
+  /testimonials/{id}:
+    put:
+      operationId: updateTestimonial
+      tags: [testimonials]
+      summary: Update a testimonial
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestimonialUpdate"
+      responses:
+        "200":
+          description: Updated testimonial
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Testimonial"
+    delete:
+      operationId: deleteTestimonial
+      tags: [testimonials]
+      summary: Delete a testimonial
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCredentials"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          description: Invalid credentials
+
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+
+  /admin/me:
+    get:
+      operationId: adminMe
+      tags: [admin]
+      summary: Check admin session
+      responses:
+        "200":
+          description: Session info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          description: Not authenticated
+
+  /upload:
+    post:
+      operationId: uploadImage
+      tags: [upload]
+      summary: Upload an image (base64)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImageUploadInput"
+      responses:
+        "200":
+          description: Uploaded image URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImageUploadResult"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    SiteSettings:
+      type: object
+      required: [id, shopName, logoUrl, primaryColor, secondaryColor, accentColor, whatsappNumber, whatsappMessage, address, phone, instagram, facebook, tiktok]
+      properties:
+        id:
+          type: integer
+        shopName:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        accentColor:
+          type: string
+        whatsappNumber:
+          type: string
+        whatsappMessage:
+          type: string
+        address:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        instagram:
+          type: ["string", "null"]
+        facebook:
+          type: ["string", "null"]
+        tiktok:
+          type: ["string", "null"]
+        footerText:
+          type: ["string", "null"]
+
+    SiteSettingsInput:
+      type: object
+      properties:
+        shopName:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        accentColor:
+          type: string
+        whatsappNumber:
+          type: string
+        whatsappMessage:
+          type: string
+        address:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        instagram:
+          type: ["string", "null"]
+        facebook:
+          type: ["string", "null"]
+        tiktok:
+          type: ["string", "null"]
+        footerText:
+          type: ["string", "null"]
+
+    Section:
+      type: object
+      required: [id, slug, title, visible, sortOrder, content]
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        visible:
+          type: boolean
+        sortOrder:
+          type: integer
+        content:
+          type: object
+          description: JSON blob with section-specific content
+
+    SectionInput:
+      type: object
+      required: [title, slug]
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        visible:
+          type: boolean
+        sortOrder:
+          type: integer
+        content:
+          type: object
+
+    SectionUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        visible:
+          type: boolean
+        sortOrder:
+          type: integer
+        content:
+          type: object
+
+    ReorderInput:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+
+    Sweet:
+      type: object
+      required: [id, name, description, imageUrl, sortOrder, visible]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    SweetInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    SweetUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    Cake:
+      type: object
+      required: [id, name, imageUrl, sortOrder, visible]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    CakeInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    CakeUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    Kit:
+      type: object
+      required: [id, name, imageUrl, sortOrder, visible]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    KitInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    KitUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    Highlight:
+      type: object
+      required: [id, imageUrl, sortOrder, visible]
+      properties:
+        id:
+          type: integer
+        imageUrl:
+          type: string
+        caption:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    HighlightInput:
+      type: object
+      required: [imageUrl]
+      properties:
+        imageUrl:
+          type: string
+        caption:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    HighlightUpdate:
+      type: object
+      properties:
+        imageUrl:
+          type: string
+        caption:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    Testimonial:
+      type: object
+      required: [id, name, text, sortOrder, visible]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        text:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    TestimonialInput:
+      type: object
+      required: [name, text]
+      properties:
+        name:
+          type: string
+        text:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    TestimonialUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        text:
+          type: string
+        photoUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+        visible:
+          type: boolean
+
+    AdminCredentials:
+      type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+
+    AdminSession:
+      type: object
+      required: [authenticated]
+      properties:
+        authenticated:
+          type: boolean
+
+    ImageUploadInput:
+      type: object
+      required: [data, filename]
+      properties:
+        data:
+          type: string
+          description: Base64 encoded image data
+        filename:
+          type: string
+
+    ImageUploadResult:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string

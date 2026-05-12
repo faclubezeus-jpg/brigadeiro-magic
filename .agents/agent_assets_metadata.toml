@@ -1,0 +1,32 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "6_Vml8HkI0Lwuu-2wU0xE"
+uri = "file://attached_assets/hero-bg.png"
+type = "image"
+title = "Hero background pastel galaxy candy"
+
+[[generated]]
+id = "-qvQg7SsB1B2rW0NyBkC3"
+uri = "file://attached_assets/sweet-1.png"
+type = "image"
+title = "Premium brigadeiro sweet chocolate"
+
+[[generated]]
+id = "LwDtF21kTFcpGXbXTacOm"
+uri = "file://attached_assets/sweet-2.png"
+type = "image"
+title = "Premium brigadeiro sweet pink"
+
+[[generated]]
+id = "Br12w98I1hjJddSGMUmdW"
+uri = "file://attached_assets/cake-1.png"
+type = "image"
+title = "Luxury chocolate cake"
+
+[[generated]]
+id = "5bOd27LkPkVZI7sU1yX5D"
+uri = "file://attached_assets/kit-1.png"
+type = "image"
+title = "Luxury candy gift box"
