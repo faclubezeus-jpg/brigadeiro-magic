@@ -13,10 +13,14 @@
   "scripts": {
     
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
-    "deploy": "pnpm --filter @workspace/db run push-force && pnpm -r build && mkdir -p artifacts/api-server/client && cp -r artifacts/doce-site/dist/public/* artifacts/api-server/client/",
+    "deploy": "npm run push-force -w @workspace/db && npm run build -w @workspace/doce-site && npm run build -w @workspace/api-server && mkdir -p artifacts/api-server/client && cp -r artifacts/doce-site/dist/public/* artifacts/api-server/client/",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
   },
+  "workspaces": [
+    "lib/*",
+    "artifacts/*"
+  ],
   "private": true,
   "devDependencies": {
     "typescript": "~5.9.2",
