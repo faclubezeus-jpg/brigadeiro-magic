@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run deploy",
+  "buildCommand": "pnpm -w run deploy",
   "installCommand": "pnpm install",
   "devCommand": "pnpm run dev",
   "outputDirectory": "artifacts/api-server/client",
