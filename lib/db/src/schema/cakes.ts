@@ -1,15 +1,15 @@
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import { pgTable, serial, text, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const cakesTable = sqliteTable("cakes", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const cakesTable = pgTable("cakes", {
+  id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
   price: text("price"),
   imageUrl: text("image_url"),
   sortOrder: integer("sort_order").notNull().default(0),
-  visible: integer("visible", { mode: "boolean" }).notNull().default(true),
+  visible: boolean("visible").notNull().default(true),
 });
 
 export const insertCakeSchema = createInsertSchema(cakesTable).omit({ id: true });

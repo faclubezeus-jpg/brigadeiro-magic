@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm run deploy",
+  "installCommand": "pnpm install",
+  "devCommand": "pnpm run dev",
+  "outputDirectory": "artifacts/api-server/client",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ]
+}

@@ -1,30 +1,15 @@
-import { drizzle } from "drizzle-orm/sqlite-proxy";
-import { DatabaseSync } from "node:sqlite";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import * as schema from "./schema";
-import path from "path";
 
-// DATABASE_PATH must be an absolute path set by the caller (api-server).
-// Fallback to process.cwd()/sqlite.db so dev tooling (drizzle-kit) still works
-// when run from lib/db/.
-const dbPath = process.env["DATABASE_PATH"] ?? path.join(process.cwd(), "sqlite.db");
+const databaseUrl = process.env["DATABASE_URL"];
 
-const sqlite = new DatabaseSync(dbPath);
+if (!databaseUrl && process.env["NODE_ENV"] === "production") {
+  throw new Error("DATABASE_URL is required in production");
+}
 
-export const db = drizzle(
-  (sql, params, method) => {
-    try {
-      const stmt = sqlite.prepare(sql);
-      if (method === "run") {
-        stmt.run(...params);
-        return { rows: [] };
-      }
-      const rows = stmt.all(...params) as any[];
-      return { rows: rows.map((r) => Object.values(r)) };
-    } catch (e: any) {
-      throw new Error(`SQLite error: ${e.message}\nSQL: ${sql}`);
-    }
-  },
-  { schema }
-);
+// In development, fallback to a local postgres or just a dummy string if we only use migrations
+const client = postgres(databaseUrl || "postgres://postgres:postgres@localhost:5432/postgres");
+export const db = drizzle(client, { schema });
 
 export * from "./schema";

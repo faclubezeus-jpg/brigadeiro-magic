@@ -1,14 +1,17 @@
 import { Router, type IRouter } from "express";
-import { writeFile, mkdir } from "fs/promises";
-import { join, extname, dirname } from "path";
+import { createClient } from "@supabase/supabase-js";
 import { randomUUID } from "crypto";
+import { extname } from "path";
 import { UploadImageBody, UploadImageResponse } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-const DB_PATH = process.env.DATABASE_PATH || join(process.cwd(), "sqlite.db");
-const DB_DIR = DB_PATH.startsWith("file:") ? dirname(DB_PATH.replace("file:", "")) : dirname(DB_PATH);
-const UPLOADS_DIR = join(DB_DIR, "uploads");
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = (supabaseUrl && supabaseServiceKey) 
+  ? createClient(supabaseUrl, supabaseServiceKey)
+  : null;
 
 const ALLOWED_EXTENSIONS = new Set([
   ".png", ".jpg", ".jpeg", ".gif", ".webp",
@@ -16,6 +19,11 @@ const ALLOWED_EXTENSIONS = new Set([
 ]);
 
 router.post("/upload", async (req, res): Promise<void> => {
+  if (!supabase) {
+    res.status(500).json({ error: "Supabase não configurado no servidor." });
+    return;
+  }
+
   const parsed = UploadImageBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
@@ -24,24 +32,35 @@ router.post("/upload", async (req, res): Promise<void> => {
 
   const { data, filename } = parsed.data;
 
-  // Strip base64 prefix (image or video)
+  // Strip base64 prefix
   const base64Data = data.replace(/^data:[^;]+;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
 
   const ext = extname(filename).toLowerCase() || ".png";
-
   if (!ALLOWED_EXTENSIONS.has(ext)) {
-    res.status(400).json({ error: `Formato não suportado: ${ext}. Use PNG, JPG, MP4 ou MOV.` });
+    res.status(400).json({ error: `Formato não suportado: ${ext}.` });
     return;
   }
 
   const safeFilename = `${randomUUID()}${ext}`;
 
-  await mkdir(UPLOADS_DIR, { recursive: true });
-  await writeFile(join(UPLOADS_DIR, safeFilename), buffer);
+  const { data: uploadData, error } = await supabase.storage
+    .from("media")
+    .upload(safeFilename, buffer, {
+      contentType: req.body.data.split(";")[0].split(":")[1], // Extract content-type from base64 string
+      upsert: false
+    });
 
-  const url = `/api/uploads/${safeFilename}`;
-  res.json(UploadImageResponse.parse({ url }));
+  if (error) {
+    res.status(500).json({ error: `Erro no Supabase Storage: ${error.message}` });
+    return;
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from("media")
+    .getPublicUrl(safeFilename);
+
+  res.json(UploadImageResponse.parse({ url: publicUrl }));
 });
 
 export default router;

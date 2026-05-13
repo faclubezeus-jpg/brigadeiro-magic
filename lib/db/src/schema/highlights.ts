@@ -1,13 +1,13 @@
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import { pgTable, serial, text, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const highlightsTable = sqliteTable("highlights", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const highlightsTable = pgTable("highlights", {
+  id: serial("id").primaryKey(),
   imageUrl: text("image_url").notNull(),
   caption: text("caption"),
   sortOrder: integer("sort_order").notNull().default(0),
-  visible: integer("visible", { mode: "boolean" }).notNull().default(true),
+  visible: boolean("visible").notNull().default(true),
 });
 
 export const insertHighlightSchema = createInsertSchema(highlightsTable).omit({ id: true });
