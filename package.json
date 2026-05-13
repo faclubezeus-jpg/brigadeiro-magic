@@ -2,6 +2,14 @@
   "name": "workspace",
   "version": "0.0.0",
   "license": "MIT",
+  "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "better-sqlite3",
+      "canvas"
+    ]
+  },
   "scripts": {
     
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
