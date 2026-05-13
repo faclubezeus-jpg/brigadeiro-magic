@@ -160,6 +160,7 @@ export const GetSweetsResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
   description: zod.string().nullable(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullable(),
   sortOrder: zod.number(),
   visible: zod.boolean(),
@@ -172,6 +173,7 @@ export const GetSweetsResponse = zod.array(GetSweetsResponseItem);
 export const CreateSweetBody = zod.object({
   name: zod.string(),
   description: zod.string().nullish(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullish(),
   sortOrder: zod.number().optional(),
   visible: zod.boolean().optional(),
@@ -187,6 +189,7 @@ export const UpdateSweetParams = zod.object({
 export const UpdateSweetBody = zod.object({
   name: zod.string().optional(),
   description: zod.string().nullish(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullish(),
   sortOrder: zod.number().optional(),
   visible: zod.boolean().optional(),
@@ -196,6 +199,7 @@ export const UpdateSweetResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
   description: zod.string().nullable(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullable(),
   sortOrder: zod.number(),
   visible: zod.boolean(),
@@ -215,6 +219,7 @@ export const GetCakesResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
   description: zod.string().nullish(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullable(),
   sortOrder: zod.number(),
   visible: zod.boolean(),
@@ -227,6 +232,7 @@ export const GetCakesResponse = zod.array(GetCakesResponseItem);
 export const CreateCakeBody = zod.object({
   name: zod.string(),
   description: zod.string().nullish(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullish(),
   sortOrder: zod.number().optional(),
   visible: zod.boolean().optional(),
@@ -242,6 +248,7 @@ export const UpdateCakeParams = zod.object({
 export const UpdateCakeBody = zod.object({
   name: zod.string().optional(),
   description: zod.string().nullish(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullish(),
   sortOrder: zod.number().optional(),
   visible: zod.boolean().optional(),
@@ -251,6 +258,7 @@ export const UpdateCakeResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
   description: zod.string().nullish(),
+  price: zod.string().nullish(),
   imageUrl: zod.string().nullable(),
   sortOrder: zod.number(),
   visible: zod.boolean(),

@@ -12,6 +12,8 @@ export interface Cake {
   /** @nullable */
   description?: string | null;
   /** @nullable */
+  price?: string | null;
+  /** @nullable */
   imageUrl: string | null;
   sortOrder: number;
   visible: boolean;

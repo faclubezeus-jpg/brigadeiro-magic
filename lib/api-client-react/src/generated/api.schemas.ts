@@ -104,6 +104,8 @@ export interface Sweet {
   /** @nullable */
   description: string | null;
   /** @nullable */
+  price?: string | null;
+  /** @nullable */
   imageUrl: string | null;
   sortOrder: number;
   visible: boolean;
@@ -114,6 +116,8 @@ export interface SweetInput {
   /** @nullable */
   description?: string | null;
   /** @nullable */
+  price?: string | null;
+  /** @nullable */
   imageUrl?: string | null;
   sortOrder?: number;
   visible?: boolean;
@@ -123,6 +127,8 @@ export interface SweetUpdate {
   name?: string;
   /** @nullable */
   description?: string | null;
+  /** @nullable */
+  price?: string | null;
   /** @nullable */
   imageUrl?: string | null;
   sortOrder?: number;
@@ -135,6 +141,8 @@ export interface Cake {
   /** @nullable */
   description?: string | null;
   /** @nullable */
+  price?: string | null;
+  /** @nullable */
   imageUrl: string | null;
   sortOrder: number;
   visible: boolean;
@@ -145,6 +153,8 @@ export interface CakeInput {
   /** @nullable */
   description?: string | null;
   /** @nullable */
+  price?: string | null;
+  /** @nullable */
   imageUrl?: string | null;
   sortOrder?: number;
   visible?: boolean;
@@ -154,6 +164,8 @@ export interface CakeUpdate {
   name?: string;
   /** @nullable */
   description?: string | null;
+  /** @nullable */
+  price?: string | null;
   /** @nullable */
   imageUrl?: string | null;
   sortOrder?: number;

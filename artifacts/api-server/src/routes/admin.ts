@@ -1,8 +1,8 @@
 import { Router, type IRouter } from "express";
 import { AdminLoginBody, AdminLoginResponse, AdminMeResponse } from "@workspace/api-zod";
 
-const ADMIN_LOGIN = "docinho doce";
-const ADMIN_PASSWORD = "docinho digital 321";
+const ADMIN_LOGIN = "docinho";
+const ADMIN_PASSWORD = "docinho321";
 const SESSION_KEY = "admin_authenticated";
 
 const router: IRouter = Router();

@@ -716,6 +716,8 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        price:
+          type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
         sortOrder:
@@ -731,6 +733,8 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        price:
+          type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
         sortOrder:
@@ -744,6 +748,8 @@ components:
         name:
           type: string
         description:
+          type: ["string", "null"]
+        price:
           type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
@@ -762,6 +768,8 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        price:
+          type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
         sortOrder:
@@ -777,6 +785,8 @@ components:
           type: string
         description:
           type: ["string", "null"]
+        price:
+          type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]
         sortOrder:
@@ -790,6 +800,8 @@ components:
         name:
           type: string
         description:
+          type: ["string", "null"]
+        price:
           type: ["string", "null"]
         imageUrl:
           type: ["string", "null"]

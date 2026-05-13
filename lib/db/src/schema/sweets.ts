@@ -6,6 +6,7 @@ export const sweetsTable = pgTable("sweets", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
+  price: varchar("price", { length: 100 }),
   imageUrl: text("image_url"),
   sortOrder: integer("sort_order").notNull().default(0),
   visible: boolean("visible").notNull().default(true),
