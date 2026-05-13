@@ -133,12 +133,23 @@ function SettingsTab() {
     <div key={key}>
       <label className="block text-xs font-semibold text-foreground/70 mb-1 uppercase tracking-wide">{label}</label>
       <input
-        data-testid={`input-settings-${key}`}
         type="text"
         value={getVal(key)}
         onChange={e => setVal(key, e.target.value)}
         placeholder={placeholder}
         className="w-full px-3 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+    </div>
+  );
+
+  const textAreaField = (key: string, label: string, rows = 4) => (
+    <div key={key}>
+      <label className="block text-xs font-semibold text-foreground/70 mb-1 uppercase tracking-wide">{label}</label>
+      <textarea
+        value={getVal(key)}
+        onChange={e => setVal(key, e.target.value)}
+        rows={rows}
+        className="w-full px-3 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
       />
     </div>
   );
@@ -210,6 +221,63 @@ function SettingsTab() {
                 Remover vídeo (volta ao padrão)
               </button>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* About Section */}
+      <div className="p-5 bg-primary/5 rounded-2xl border border-primary/20 space-y-4">
+        <h4 className="font-serif text-lg font-bold text-foreground flex items-center gap-2">
+          <span>📖 Seção Sobre Nós</span>
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
+            {textField("aboutTitle", "Título da Seção", "Sobre Nós")}
+            {textAreaField("aboutText", "Texto da História (use pulo de linha para novos parágrafos)", 8)}
+          </div>
+          <div className="space-y-3">
+            <label className="block text-xs font-semibold text-foreground/70 uppercase tracking-wide">Imagem ou Vídeo (PNG/MP4)</label>
+            <div className="aspect-[4/3] rounded-2xl border border-border bg-muted overflow-hidden">
+              <MediaPreview url={getVal("aboutMediaUrl")} />
+            </div>
+            <div className="flex gap-2">
+              <FileUploadButton
+                onUpload={url => setVal("aboutMediaUrl", url)}
+                label="📁 Alterar Mídia"
+                className="flex-1"
+              />
+              {getVal("aboutMediaUrl") && (
+                <button onClick={() => setVal("aboutMediaUrl", null)} className="px-3 py-2 rounded-xl border border-destructive/30 text-destructive text-xs hover:bg-destructive/5">
+                  Reset
+                </button>
+              )}
+            </div>
+            <input
+              type="text"
+              value={getVal("aboutMediaUrl")}
+              onChange={e => setVal("aboutMediaUrl", e.target.value)}
+              placeholder="Ou cole a URL direta"
+              className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+        </div>
+
+        {/* Counters / Stats */}
+        <div className="pt-4 border-t border-border">
+          <p className="text-xs font-semibold text-foreground/70 uppercase tracking-wide mb-3">Números de Destaque (Contadores)</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-3 bg-background rounded-xl border border-border space-y-2">
+              {textField("aboutStat1Number", "Número 1", "500+")}
+              {textField("aboutStat1Label", "Legenda 1", "Pedidos")}
+            </div>
+            <div className="p-3 bg-background rounded-xl border border-border space-y-2">
+              {textField("aboutStat2Number", "Número 2", "50+")}
+              {textField("aboutStat2Label", "Legenda 2", "Sabores")}
+            </div>
+            <div className="p-3 bg-background rounded-xl border border-border space-y-2">
+              {textField("aboutStat3Number", "Número 3", "5★")}
+              {textField("aboutStat3Label", "Legenda 3", "Avaliação")}
+            </div>
           </div>
         </div>
       </div>

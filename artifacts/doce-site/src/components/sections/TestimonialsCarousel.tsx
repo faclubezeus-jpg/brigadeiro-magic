@@ -14,7 +14,8 @@ const PLACEHOLDER_TESTIMONIALS = [
 ];
 
 export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps) {
-  const items = testimonials.filter(t => t.visible).length > 0 ? testimonials.filter(t => t.visible) : PLACEHOLDER_TESTIMONIALS;
+  const visibleTestimonials = Array.isArray(testimonials) ? testimonials.filter(t => t.visible) : [];
+  const items = visibleTestimonials.length > 0 ? visibleTestimonials : PLACEHOLDER_TESTIMONIALS;
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

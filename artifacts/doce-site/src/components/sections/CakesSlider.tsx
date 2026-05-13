@@ -16,7 +16,7 @@ function isVideo(url: string | null | undefined) {
 }
 
 export function CakesSlider({ cakes }: CakesSliderProps) {
-  const visibleCakes = cakes.filter(c => c.visible);
+  const visibleCakes = Array.isArray(cakes) ? cakes.filter(c => c.visible) : [];
   const items = visibleCakes.length > 0 ? visibleCakes : PLACEHOLDER_CAKES;
   const trackRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -44,7 +44,7 @@ export function CakesSlider({ cakes }: CakesSliderProps) {
   const duplicated = items.length > 1 ? [...items, ...items] : items;
 
   return (
-    <section id="bolos" className="py-16 md:py-24 overflow-hidden" style={{ background: "#EFE8D8" }}>
+    <section id="bolos" className="py-16 md:py-24 overflow-hidden bg-muted">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -52,13 +52,13 @@ export function CakesSlider({ cakes }: CakesSliderProps) {
         transition={{ duration: 0.7 }}
         className="text-center mb-10 px-4"
       >
-        <span className="text-sm font-semibold tracking-widest uppercase" style={{ color: "#D0A77B" }}>
+        <span className="text-sm font-semibold tracking-widest uppercase text-accent">
           Criações
         </span>
-        <h2 className="font-serif text-3xl md:text-5xl font-bold mt-2" style={{ color: "#725C3F" }}>
+        <h2 className="font-serif text-3xl md:text-5xl font-bold mt-2 text-foreground">
           Galeria de Bolos
         </h2>
-        <p className="mt-3 text-sm md:text-base" style={{ color: "#9b8068" }}>
+        <p className="mt-3 text-sm md:text-base text-muted-foreground">
           Bolos artesanais para celebrar cada momento especial
         </p>
       </motion.div>
@@ -86,8 +86,7 @@ export function CakesSlider({ cakes }: CakesSliderProps) {
           <div
             key={`${cake.id}-${i}`}
             data-testid={i < items.length ? `card-cake-${cake.id}` : undefined}
-            className="flex-shrink-0 w-64 sm:w-72 md:w-80 rounded-3xl overflow-hidden shadow-lg border group"
-            style={{ background: "#FFF8F0", borderColor: "rgba(208,167,123,0.25)" }}
+            className="flex-shrink-0 w-64 sm:w-72 md:w-80 rounded-3xl overflow-hidden shadow-lg border border-border group bg-card"
           >
             <div className="h-64 sm:h-72 md:h-80 overflow-hidden relative">
               {isVideo(cake.imageUrl) ? (
@@ -98,23 +97,19 @@ export function CakesSlider({ cakes }: CakesSliderProps) {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" draggable={false} />
               )}
               {cake.price && (
-                <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full text-sm font-bold shadow-md"
-                  style={{ background: "#E5ADA8", color: "#fff" }}>
+                <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full text-sm font-bold shadow-md bg-primary text-primary-foreground">
                   {cake.price}
                 </div>
               )}
             </div>
             <div className="p-5">
-              <h3 className="font-serif text-lg font-bold" style={{ color: "#725C3F" }}>{cake.name}</h3>
+              <h3 className="font-serif text-lg font-bold text-foreground">{cake.name}</h3>
               {cake.description && (
-                <p className="text-sm mt-1" style={{ color: "#9b8068" }}>{cake.description}</p>
+                <p className="text-sm mt-1 text-muted-foreground">{cake.description}</p>
               )}
               <button
                 onClick={() => addItem({ id: cake.id, type: "cake", name: cake.name, price: cake.price, imageUrl: cake.imageUrl })}
-                className="mt-4 w-full py-2.5 rounded-xl text-sm font-semibold transition-all"
-                style={{ background: "rgba(208,167,123,0.15)", color: "#D0A77B" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#D0A77B"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(208,167,123,0.15)"; (e.currentTarget as HTMLElement).style.color = "#D0A77B"; }}
+                className="mt-4 w-full py-2.5 rounded-xl text-sm font-semibold transition-all bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground"
                 data-testid={i < items.length ? `btn-add-cake-${cake.id}` : undefined}
               >
                 + Carrinho

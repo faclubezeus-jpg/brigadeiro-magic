@@ -57,10 +57,10 @@ export function HeroSection({ settings }: HeroSectionProps) {
           style={{
             background: `linear-gradient(
               to bottom,
-              rgba(114,92,63,0.30) 0%,
-              rgba(229,173,168,0.22) 40%,
-              rgba(239,232,216,0.18) 70%,
-              rgba(239,232,216,0.65) 100%
+              rgba(61,49,46,0.30) 0%,
+              rgba(235,179,185,0.22) 40%,
+              rgba(255,255,255,0.18) 70%,
+              rgba(255,255,255,0.65) 100%
             )`,
           }}
         />
@@ -70,8 +70,8 @@ export function HeroSection({ settings }: HeroSectionProps) {
           className="absolute inset-0 pointer-events-none transition-all duration-150"
           style={{
             background: `radial-gradient(ellipse at ${50 + mousePos.x}% ${50 + mousePos.y}%,
-              rgba(229,173,168,0.28) 0%,
-              rgba(208,167,123,0.14) 45%,
+              rgba(212,175,55,0.28) 0%,
+              rgba(235,179,185,0.14) 45%,
               transparent 70%)`,
           }}
         />
@@ -112,9 +112,9 @@ export function HeroSection({ settings }: HeroSectionProps) {
             <span
               className="inline-block px-5 py-2 rounded-full text-sm font-semibold tracking-wide border mb-4"
               style={{
-                background: "rgba(239,232,216,0.70)",
-                borderColor: "rgba(208,167,123,0.45)",
-                color: "#725C3F",
+                background: "rgba(255,255,255,0.70)",
+                borderColor: "rgba(212,175,55,0.45)",
+                color: "#D4AF37",
                 backdropFilter: "blur(10px)",
               }}
             >
@@ -129,8 +129,8 @@ export function HeroSection({ settings }: HeroSectionProps) {
           transition={{ delay: 0.25, duration: 0.9 }}
           className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-5"
           style={{
-            color: "#EFE8D8",
-            textShadow: "0 2px 24px rgba(114,92,63,0.55), 0 0 60px rgba(229,173,168,0.30)",
+            color: "#FAFAFA",
+            textShadow: "0 2px 24px rgba(61,49,46,0.55), 0 0 60px rgba(235,179,185,0.30)",
           }}
         >
           {settings?.shopName ?? "Docinho O Docinho"}
@@ -140,10 +140,10 @@ export function HeroSection({ settings }: HeroSectionProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 0.8 }}
-          className="text-base md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed font-medium"
+          className="text-base md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed font-medium px-2"
           style={{
-            color: "rgba(239,232,216,0.92)",
-            textShadow: "0 1px 12px rgba(114,92,63,0.6)",
+            color: "rgba(255,255,255,0.95)",
+            textShadow: "0 1px 12px rgba(61,49,46,0.8)",
           }}
         >
           Brigadeiros artesanais feitos com amor, ingredientes selecionados e muita magia
@@ -159,10 +159,10 @@ export function HeroSection({ settings }: HeroSectionProps) {
           <motion.button
             data-testid="button-hero-whatsapp"
             onClick={handleWhatsApp}
-            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(229,173,168,0.45)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(235,179,185,0.45)" }}
             whileTap={{ scale: 0.97 }}
-            className="px-8 py-4 rounded-full font-semibold text-base shadow-xl transition-all flex items-center gap-2 justify-center"
-            style={{ background: "#E5ADA8", color: "#fff" }}
+            className="px-8 py-4 w-full sm:w-auto rounded-full font-semibold text-base shadow-xl transition-all flex items-center gap-2 justify-center"
+            style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-shrink-0">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -174,12 +174,12 @@ export function HeroSection({ settings }: HeroSectionProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => document.querySelector("#destaques")?.scrollIntoView({ behavior: "smooth" })}
-            className="px-8 py-4 rounded-full font-semibold text-base transition-all"
+            className="px-8 py-4 w-full sm:w-auto rounded-full font-semibold text-base transition-all"
             style={{
-              background: "rgba(239,232,216,0.22)",
+              background: "rgba(255,255,255,0.22)",
               backdropFilter: "blur(12px)",
-              border: "1px solid rgba(239,232,216,0.45)",
-              color: "#EFE8D8",
+              border: "1px solid rgba(255,255,255,0.45)",
+              color: "#FAFAFA",
             }}
           >
             Ver Cardápio
@@ -195,10 +195,19 @@ export function HeroSection({ settings }: HeroSectionProps) {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 z-20"
         style={{ opacity: 0.75 }}
       >
-        <span className="text-xs font-medium tracking-widest uppercase" style={{ color: "#EFE8D8", textShadow: "0 1px 6px rgba(114,92,63,0.5)" }}>
-          Scroll
-        </span>
-        <span className="text-2xl drop-shadow-md" title="brigadeiro">🍬</span>
+        <svg
+          className="w-6 h-6 text-white drop-shadow-md"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2.5}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
       </motion.button>
     </section>
   );

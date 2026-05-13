@@ -17,7 +17,7 @@ export function ContactSection({ settings }: ContactSectionProps) {
     : `https://wa.me/${settings?.whatsappNumber ?? "5511999999999"}?text=${encodeURIComponent(settings?.whatsappMessage ?? "Olá! Vim pelo site e gostaria de fazer um pedido.")}`;
 
   return (
-    <section id="contato" className="py-16 md:py-20 px-4 md:px-6">
+    <section id="contato" className="py-16 md:py-20 px-4 md:px-6 bg-muted/30">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

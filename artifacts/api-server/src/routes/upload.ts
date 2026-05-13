@@ -1,12 +1,14 @@
 import { Router, type IRouter } from "express";
 import { writeFile, mkdir } from "fs/promises";
-import { join, extname } from "path";
+import { join, extname, dirname } from "path";
 import { randomUUID } from "crypto";
 import { UploadImageBody, UploadImageResponse } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
-const UPLOADS_DIR = join(process.cwd(), "public", "uploads");
+const DB_PATH = process.env.DATABASE_PATH || join(process.cwd(), "sqlite.db");
+const DB_DIR = DB_PATH.startsWith("file:") ? dirname(DB_PATH.replace("file:", "")) : dirname(DB_PATH);
+const UPLOADS_DIR = join(DB_DIR, "uploads");
 
 const ALLOWED_EXTENSIONS = new Set([
   ".png", ".jpg", ".jpeg", ".gif", ".webp",

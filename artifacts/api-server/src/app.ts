@@ -49,8 +49,21 @@ app.use(
 );
 
 // Serve uploaded files
-app.use("/api/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
+const DB_PATH_U = process.env.DATABASE_PATH || path.join(process.cwd(), "sqlite.db");
+const DB_DIR_U = DB_PATH_U.startsWith("file:") ? path.dirname(DB_PATH_U.replace("file:", "")) : path.dirname(DB_PATH_U);
+const UPLOADS_DIR = path.join(DB_DIR_U, "uploads");
+app.use("/api/uploads", express.static(UPLOADS_DIR));
 
 app.use("/api", router);
+
+// Serve static frontend files (Vite build)
+const clientPath = path.join(process.cwd(), "client");
+app.use(express.static(clientPath));
+
+// Fallback for SPA (Single Page Application)
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) return res.status(404).json({ error: "Not found" });
+  res.sendFile(path.join(clientPath, "index.html"));
+});
 
 export default app;

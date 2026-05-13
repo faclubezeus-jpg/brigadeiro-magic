@@ -28,7 +28,8 @@ const card = {
 };
 
 export function KitsGrid({ kits }: KitsGridProps) {
-  const items = kits.filter(k => k.visible).length > 0 ? kits.filter(k => k.visible) : PLACEHOLDER_KITS;
+  const visibleKits = Array.isArray(kits) ? kits.filter(k => k.visible) : [];
+  const items = visibleKits.length > 0 ? visibleKits : PLACEHOLDER_KITS;
   const { addItem } = useCart();
 
   return (

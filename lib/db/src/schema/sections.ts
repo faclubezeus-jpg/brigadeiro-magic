@@ -1,14 +1,14 @@
-import { pgTable, serial, varchar, boolean, integer, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const sectionsTable = pgTable("sections", {
-  id: serial("id").primaryKey(),
-  slug: varchar("slug", { length: 100 }).notNull().unique(),
-  title: varchar("title", { length: 255 }).notNull(),
-  visible: boolean("visible").notNull().default(true),
+export const sectionsTable = sqliteTable("sections", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  visible: integer("visible", { mode: "boolean" }).notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),
-  content: jsonb("content").notNull().default({}),
+  content: text("content", { mode: "json" }).notNull().default({}),
 });
 
 export const insertSectionSchema = createInsertSchema(sectionsTable).omit({ id: true });

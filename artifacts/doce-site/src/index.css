@@ -62,89 +62,87 @@
 }
 
 /* ============================
-   ICE CREAM PALETTE — LIGHT
-   Strawberry #E5ADA8  → 3 38% 78%
-   Vanilla    #E5E0D8  → 37 24% 87%
-   Caramel    #D0A77B  → 31 50% 65%
-   Chocolate  #725C3F  → 33 29% 34%
-   Lemon      #EFE8D8  → 40 42% 89%
-   Mint       #D8D7B2  → 59 27% 77%
+   GOURMET SWEETS PALETTE — LIGHT
+   Pink (Blush)    #EBB3B9 -> 354 50% 81%
+   Gold (Champagne)#D4AF37 -> 46 65% 52%
+   White/Off-White #FAFAFA -> 0 0% 98%
+   Dark (Text)     #3D312E -> 12 14% 21%
    ============================ */
 
 :root {
-  --button-outline: rgba(114, 92, 63, .12);
-  --badge-outline: rgba(114, 92, 63, .06);
+  --button-outline: rgba(212, 175, 55, .15);
+  --badge-outline: rgba(212, 175, 55, .1);
   --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(114, 92, 63, .04);
-  --elevate-2: rgba(114, 92, 63, .09);
+  --elevate-1: rgba(235, 179, 185, .08);
+  --elevate-2: rgba(235, 179, 185, .15);
 
-  /* Lemon cream background */
-  --background: 40 42% 89%;
-  /* Chocolate for text — warm, readable */
-  --foreground: 33 29% 22%;
+  /* Clean White background */
+  --background: 0 0% 99%;
+  /* Dark Chocolate for text — elegant, readable */
+  --foreground: 12 14% 21%;
 
-  /* Vanilla borders */
-  --border: 37 24% 80%;
-  --input: 37 24% 80%;
+  /* Subtle borders */
+  --border: 0 0% 92%;
+  --input: 0 0% 92%;
 
-  /* Cards: slightly lighter lemon */
-  --card: 40 40% 94%;
-  --card-foreground: 33 29% 22%;
-  --card-border: 37 24% 82%;
+  /* Cards: White */
+  --card: 0 0% 100%;
+  --card-foreground: 12 14% 21%;
+  --card-border: 0 0% 92%;
 
   /* Popover */
-  --popover: 40 40% 96%;
-  --popover-foreground: 33 29% 22%;
-  --popover-border: 37 24% 82%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 12 14% 21%;
+  --popover-border: 0 0% 92%;
 
-  /* Sidebar: vanilla */
-  --sidebar: 37 24% 87%;
-  --sidebar-foreground: 33 29% 22%;
-  --sidebar-border: 37 24% 78%;
-  --sidebar-primary: 3 38% 68%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 31 50% 88%;
-  --sidebar-accent-foreground: 33 29% 22%;
-  --sidebar-ring: 3 38% 68%;
+  /* Sidebar */
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 12 14% 21%;
+  --sidebar-border: 0 0% 90%;
+  --sidebar-primary: 354 50% 81%;
+  --sidebar-primary-foreground: 12 14% 21%;
+  --sidebar-accent: 46 65% 52%;
+  --sidebar-accent-foreground: 12 14% 21%;
+  --sidebar-ring: 354 50% 81%;
 
-  /* Primary: Strawberry */
-  --primary: 3 38% 68%;
-  --primary-foreground: 0 0% 100%;
+  /* Primary: Blush Pink */
+  --primary: 354 50% 81%;
+  --primary-foreground: 12 14% 21%;
 
-  /* Secondary: Vanilla */
-  --secondary: 37 24% 82%;
-  --secondary-foreground: 33 29% 28%;
+  /* Secondary: Soft Gray/Pink mix */
+  --secondary: 354 20% 92%;
+  --secondary-foreground: 12 14% 21%;
 
-  /* Muted: Mint */
-  --muted: 59 27% 88%;
-  --muted-foreground: 33 15% 50%;
+  /* Muted */
+  --muted: 0 0% 96%;
+  --muted-foreground: 12 10% 45%;
 
-  /* Accent: Caramel */
-  --accent: 31 50% 65%;
+  /* Accent: Champagne Gold */
+  --accent: 46 65% 52%;
   --accent-foreground: 0 0% 100%;
 
   /* Destructive */
   --destructive: 0 72% 55%;
   --destructive-foreground: 0 0% 100%;
 
-  --ring: 3 38% 68%;
+  --ring: 354 50% 81%;
 
-  --chart-1: 3 38% 68%;
-  --chart-2: 31 50% 65%;
-  --chart-3: 59 27% 77%;
-  --chart-4: 37 24% 87%;
-  --chart-5: 33 29% 34%;
+  --chart-1: 354 50% 81%;
+  --chart-2: 46 65% 52%;
+  --chart-3: 354 20% 92%;
+  --chart-4: 12 14% 21%;
+  --chart-5: 0 0% 90%;
 
   --radius: 1rem;
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(33 29% 34% / 0.05);
-  --shadow-xs:  0px 4px 12px 0px hsl(33 29% 34% / 0.08);
-  --shadow-sm:  0px 8px 24px -4px hsl(33 29% 34% / 0.10);
-  --shadow:     0px 12px 32px -8px hsl(33 29% 34% / 0.14);
-  --shadow-md:  0px 16px 40px -12px hsl(33 29% 34% / 0.18);
-  --shadow-lg:  0px 24px 48px -12px hsl(33 29% 34% / 0.22);
-  --shadow-xl:  0px 32px 64px -16px hsl(33 29% 34% / 0.28);
-  --shadow-2xl: 0px 40px 80px -20px hsl(33 29% 34% / 0.34);
+  --shadow-2xs: 0px 2px 0px 0px hsl(12 14% 21% / 0.03);
+  --shadow-xs:  0px 4px 12px 0px hsl(12 14% 21% / 0.05);
+  --shadow-sm:  0px 8px 24px -4px hsl(12 14% 21% / 0.08);
+  --shadow:     0px 12px 32px -8px hsl(12 14% 21% / 0.12);
+  --shadow-md:  0px 16px 40px -12px hsl(12 14% 21% / 0.15);
+  --shadow-lg:  0px 24px 48px -12px hsl(12 14% 21% / 0.18);
+  --shadow-xl:  0px 32px 64px -16px hsl(12 14% 21% / 0.22);
+  --shadow-2xl: 0px 40px 80px -20px hsl(12 14% 21% / 0.25);
 
   --tracking-normal: 0em;
   --spacing: 0.25rem;
@@ -159,61 +157,61 @@
 }
 
 .dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  --button-outline: rgba(212, 175, 55, .15);
+  --badge-outline: rgba(212, 175, 55, .10);
   --opaque-button-border-intensity: 9;
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  /* Deep chocolate background */
-  --background: 33 25% 14%;
-  --foreground: 40 42% 92%;
+  /* Deep elegant background */
+  --background: 12 14% 12%;
+  --foreground: 0 0% 96%;
 
-  --border: 33 20% 28%;
-  --input: 33 20% 28%;
+  --border: 12 10% 25%;
+  --input: 12 10% 25%;
 
-  --card: 33 22% 18%;
-  --card-foreground: 40 42% 92%;
-  --card-border: 33 20% 28%;
+  --card: 12 14% 16%;
+  --card-foreground: 0 0% 96%;
+  --card-border: 12 10% 25%;
 
-  --sidebar: 33 22% 16%;
-  --sidebar-foreground: 40 42% 92%;
-  --sidebar-border: 33 20% 28%;
-  --sidebar-primary: 3 45% 72%;
-  --sidebar-primary-foreground: 33 25% 14%;
-  --sidebar-accent: 31 35% 28%;
-  --sidebar-accent-foreground: 40 42% 92%;
-  --sidebar-ring: 3 45% 72%;
+  --sidebar: 12 14% 14%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-border: 12 10% 25%;
+  --sidebar-primary: 354 40% 70%;
+  --sidebar-primary-foreground: 12 14% 12%;
+  --sidebar-accent: 46 55% 45%;
+  --sidebar-accent-foreground: 0 0% 96%;
+  --sidebar-ring: 354 40% 70%;
 
-  --popover: 33 22% 18%;
-  --popover-foreground: 40 42% 92%;
-  --popover-border: 33 20% 28%;
+  --popover: 12 14% 16%;
+  --popover-foreground: 0 0% 96%;
+  --popover-border: 12 10% 25%;
 
-  /* Primary: lighter strawberry in dark */
-  --primary: 3 45% 72%;
-  --primary-foreground: 33 25% 14%;
+  /* Primary: muted pink */
+  --primary: 354 40% 70%;
+  --primary-foreground: 12 14% 12%;
 
-  /* Secondary: warm chocolate mid-tone */
-  --secondary: 31 25% 28%;
-  --secondary-foreground: 40 42% 90%;
+  /* Secondary: warm dark tone */
+  --secondary: 12 15% 22%;
+  --secondary-foreground: 0 0% 96%;
 
-  --muted: 33 20% 22%;
-  --muted-foreground: 37 15% 62%;
+  --muted: 12 10% 18%;
+  --muted-foreground: 12 5% 65%;
 
-  /* Accent: warm caramel */
-  --accent: 31 45% 58%;
-  --accent-foreground: 0 0% 100%;
+  /* Accent: Gold */
+  --accent: 46 55% 45%;
+  --accent-foreground: 12 14% 12%;
 
   --destructive: 0 60% 45%;
   --destructive-foreground: 0 0% 100%;
 
-  --ring: 3 45% 72%;
+  --ring: 354 40% 70%;
 
-  --chart-1: 3 45% 72%;
-  --chart-2: 31 45% 58%;
-  --chart-3: 59 22% 65%;
-  --chart-4: 33 20% 22%;
-  --chart-5: 40 42% 92%;
+  --chart-1: 354 40% 70%;
+  --chart-2: 46 55% 45%;
+  --chart-3: 12 15% 22%;
+  --chart-4: 12 10% 18%;
+  --chart-5: 0 0% 96%;
 
   --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
   --shadow-xs:  0px 4px 12px 0px hsl(0 0% 0% / 0.3);
@@ -247,31 +245,43 @@
 
 /* Glassmorphism helpers */
 .glass {
-  background: rgba(239, 232, 216, 0.55);
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(229, 224, 216, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 .glass-heavy {
-  background: rgba(239, 232, 216, 0.82);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(229, 224, 216, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
-/* Text glow — caramel tone */
+.dark .glass {
+  background: rgba(30, 25, 25, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-heavy {
+  background: rgba(30, 25, 25, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Text glow — gold tone */
 .text-glow {
-  text-shadow: 0 0 20px rgba(208, 167, 123, 0.45);
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
 }
 
-/* Holographic shimmer — ice cream palette */
+/* Holographic shimmer — elegant gourmet palette */
 .holographic-bg {
   background: linear-gradient(
     135deg,
-    rgba(229, 173, 168, 0.25) 0%,
-    rgba(239, 232, 216, 0.35) 30%,
-    rgba(208, 167, 123, 0.20) 65%,
-    rgba(216, 215, 178, 0.25) 100%
+    rgba(235, 179, 185, 0.25) 0%, /* Pink */
+    rgba(255, 255, 255, 0.4) 30%, /* White */
+    rgba(212, 175, 55, 0.15) 65%, /* Gold */
+    rgba(235, 179, 185, 0.2) 100% /* Pink */
   );
   background-size: 200% 200%;
   animation: holo 10s ease infinite;

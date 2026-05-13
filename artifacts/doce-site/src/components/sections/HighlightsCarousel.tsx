@@ -18,7 +18,8 @@ function isVideo(url: string | null | undefined) {
 }
 
 export function HighlightsCarousel({ highlights }: HighlightsCarouselProps) {
-  const items = highlights.filter(h => h.visible).length > 0 ? highlights.filter(h => h.visible) : PLACEHOLDER_HIGHLIGHTS;
+  const visibleHighlights = Array.isArray(highlights) ? highlights.filter(h => h.visible) : [];
+  const items = visibleHighlights.length > 0 ? visibleHighlights : PLACEHOLDER_HIGHLIGHTS;
   const [current, setCurrent] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 

@@ -27,26 +27,29 @@ const item = {
 };
 
 export function SweetsGrid({ sweets }: SweetsGridProps) {
-  const visibleSweets = sweets.filter(s => s.visible);
+  const visibleSweets = Array.isArray(sweets) ? sweets.filter(s => s.visible) : [];
   const items = visibleSweets.length > 0 ? visibleSweets : PLACEHOLDER_SWEETS;
   const { addItem } = useCart();
 
   return (
-    <section id="docinhos" className="py-16 md:py-24 px-4 md:px-6" style={{ background: "hsl(40 38% 92%)" }}>
+    <section id="docinhos" className="py-16 md:py-24 px-4 md:px-6 bg-background relative">
+      {/* Subtle decorative background glow */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,rgba(235,179,185,0.05)_0%,transparent_70%)]" />
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="text-center mb-12"
+        className="text-center mb-12 relative z-10"
       >
-        <span className="text-sm font-semibold tracking-widest uppercase" style={{ color: "#D0A77B" }}>
+        <span className="text-sm font-semibold tracking-widest uppercase text-accent">
           Cardápio
         </span>
-        <h2 className="font-serif text-3xl md:text-5xl font-bold mt-2" style={{ color: "#725C3F" }}>
+        <h2 className="font-serif text-3xl md:text-5xl font-bold mt-2 text-foreground">
           Nossos Docinhos
         </h2>
-        <p className="mt-3 max-w-xl mx-auto text-sm md:text-base" style={{ color: "#9b8068" }}>
+        <p className="mt-3 max-w-xl mx-auto text-sm md:text-base text-muted-foreground">
           Cada docinho é uma obra de arte feita com ingredientes premium e muito amor
         </p>
       </motion.div>
@@ -56,16 +59,15 @@ export function SweetsGrid({ sweets }: SweetsGridProps) {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 max-w-7xl mx-auto"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 max-w-7xl mx-auto relative z-10"
       >
         {items.map((sweet) => (
           <motion.div
             key={sweet.id}
             data-testid={`card-sweet-${sweet.id}`}
             variants={item}
-            whileHover={{ y: -6, boxShadow: "0 20px 40px rgba(208,167,123,0.30)" }}
-            className="rounded-2xl overflow-hidden shadow-md border group transition-all duration-300 flex flex-col"
-            style={{ background: "#FFF8F0", borderColor: "rgba(208,167,123,0.25)" }}
+            whileHover={{ y: -6 }}
+            className="rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-border group transition-all duration-300 flex flex-col bg-card"
           >
             <div className="aspect-square overflow-hidden relative">
               {isVideo(sweet.imageUrl) ? (
@@ -76,18 +78,17 @@ export function SweetsGrid({ sweets }: SweetsGridProps) {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
               )}
               {sweet.price && (
-                <div className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold shadow-md"
-                  style={{ background: "#E5ADA8", color: "#fff" }}>
+                <div className="absolute top-2 right-2 px-2.5 py-1 rounded-full text-xs font-bold shadow-md bg-primary text-primary-foreground">
                   {sweet.price}
                 </div>
               )}
             </div>
             <div className="p-3 flex flex-col flex-1">
-              <h3 className="font-serif text-sm font-bold leading-tight" style={{ color: "#725C3F" }}>
+              <h3 className="font-serif text-sm font-bold leading-tight text-foreground">
                 {sweet.name}
               </h3>
               {sweet.description && (
-                <p className="text-xs mt-1 leading-relaxed line-clamp-2 flex-1" style={{ color: "#9b8068" }}>
+                <p className="text-xs mt-1 leading-relaxed line-clamp-2 flex-1 text-muted-foreground">
                   {sweet.description}
                 </p>
               )}
@@ -95,10 +96,7 @@ export function SweetsGrid({ sweets }: SweetsGridProps) {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => addItem({ id: sweet.id, type: "sweet", name: sweet.name, price: sweet.price, imageUrl: sweet.imageUrl })}
-                className="mt-2.5 w-full py-2 rounded-xl text-xs font-semibold transition-all"
-                style={{ background: "rgba(208,167,123,0.15)", color: "#D0A77B" }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#D0A77B"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(208,167,123,0.15)"; (e.currentTarget as HTMLElement).style.color = "#D0A77B"; }}
+                className="mt-2.5 w-full py-2 rounded-xl text-xs font-semibold transition-all bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground"
                 data-testid={`btn-add-sweet-${sweet.id}`}
               >
                 + Carrinho
