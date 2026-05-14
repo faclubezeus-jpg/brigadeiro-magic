@@ -9,12 +9,12 @@ export const logger = pino({
     "req.headers.cookie",
     "res.headers['set-cookie']",
   ],
-  ...(isProduction
-    ? {}
-    : {
+  ...(process.env.NODE_ENV === "development"
+    ? {
         transport: {
           target: "pino-pretty",
           options: { colorize: true },
         },
-      }),
+      }
+    : {}),
 });
