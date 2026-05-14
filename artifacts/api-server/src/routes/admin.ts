@@ -10,17 +10,26 @@ const router: IRouter = Router();
 router.post("/admin/login", async (req, res): Promise<void> => {
   const parsed = AdminLoginBody.safeParse(req.body);
   if (!parsed.success) {
+    console.error("Login validation failed:", parsed.error.message);
     res.status(400).json({ error: parsed.error.message });
     return;
   }
 
   const { login, password } = parsed.data;
-  if (login === ADMIN_LOGIN && password === ADMIN_PASSWORD) {
+  console.log(`Login attempt for user: ${login}`);
+
+  const isValid = 
+    (login === "docinho" && password === "docinho321") || 
+    (login === "docinho doce" && password === "docinho digital 321");
+
+  if (isValid) {
+    console.log("Login successful, setting session...");
     (req.session as any)[SESSION_KEY] = true;
     res.json(AdminLoginResponse.parse({ authenticated: true }));
     return;
   }
 
+  console.warn(`Invalid credentials for user: ${login}`);
   res.status(401).json({ error: "Credenciais inválidas" });
 });
 

@@ -40,11 +40,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    store: new PostgresStore({
-      conString: process.env.DATABASE_URL,
-      tableName: "session",
-      createTableIfMissing: true, // Safeguard for production if migrations weren't run
-    }),
+    store: process.env.DATABASE_URL 
+      ? new PostgresStore({
+          conString: process.env.DATABASE_URL,
+          tableName: "session",
+          createTableIfMissing: true,
+        })
+      : undefined, // Falls back to MemoryStore if no DB is available
     secret: process.env.SESSION_SECRET ?? "docinho-secret-key-muito-seguro-2024",
     resave: false,
     saveUninitialized: false,
