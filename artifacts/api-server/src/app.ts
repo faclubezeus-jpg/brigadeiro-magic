@@ -75,12 +75,16 @@ const clientPath = path.join(process.cwd(), "client");
 app.use(express.static(clientPath));
 
 // Fallback for SPA (Single Page Application)
-app.get("*", (req, res) => {
-  if (req.path.startsWith("/api")) {
+app.use((req, res) => {
+  if (req.method === 'GET') {
+    if (req.path.startsWith("/api")) {
+      res.status(404).json({ error: "Not found" });
+      return;
+    }
+    res.sendFile(path.join(clientPath, "index.html"));
+  } else {
     res.status(404).json({ error: "Not found" });
-    return;
   }
-  res.sendFile(path.join(clientPath, "index.html"));
 });
 
 export default app;
