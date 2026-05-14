@@ -1,31 +1,31 @@
 {
-    "name": "workspace",
-    "version": "0.0.0",
-    "license": "MIT",
-    "private": true,
-    "packageManager": "pnpm@9.15.4",
-    "pnpm": {
-          "onlyBuiltDependencies": [
-                  "esbuild",
-                  "better-sqlite3",
-                  "canvas"
-          ]
-    },
-    "scripts": {
-          "build": "pnpm run typecheck && pnpm -r --if-present run build",
-          "build:netlify": "pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && mkdir -p artifacts/api-server/client && cp -r artifacts/doce-site/dist/public/* artifacts/api-server/client/",
-          "deploy": "pnpm run push-force --filter @workspace/db && pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && mkdir -p artifacts/api-server/client && cp -r artifacts/doce-site/dist/public/* artifacts/api-server/client/",
-          "typecheck:libs": "tsc --build",
-          "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-          "dev": "pnpm -r --parallel run dev",
-          "start": "pnpm -r --parallel run start"
-    },
-    "workspaces": [
-          "lib/*",
-          "artifacts/*"
-    ],
-    "devDependencies": {
-          "typescript": "~5.9.2",
-          "prettier": "^3.8.1"
-    }
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "better-sqlite3",
+      "canvas"
+    ]
+  },
+  "scripts": {
+    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "build:netlify": "pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && node scripts/deploy-helper.mjs prepare-netlify",
+    "deploy": "pnpm run push-force --filter @workspace/db && pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && node scripts/deploy-helper.mjs prepare-netlify",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "dev": "pnpm -r --parallel run dev",
+    "start": "pnpm -r --parallel run start"
+  },
+  "workspaces": [
+    "lib/*",
+    "artifacts/*"
+  ],
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "prettier": "^3.8.1"
+  }
 }
