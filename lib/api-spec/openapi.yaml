@@ -619,6 +619,24 @@ components:
           type: ["string", "null"]
         footerText:
           type: ["string", "null"]
+        aboutTitle:
+          type: string
+        aboutText:
+          type: string
+        aboutMediaUrl:
+          type: string
+        aboutStat1Number:
+          type: string
+        aboutStat1Label:
+          type: string
+        aboutStat2Number:
+          type: string
+        aboutStat2Label:
+          type: string
+        aboutStat3Number:
+          type: string
+        aboutStat3Label:
+          type: string
 
     SiteSettingsInput:
       type: object
@@ -651,6 +669,24 @@ components:
           type: ["string", "null"]
         footerText:
           type: ["string", "null"]
+        aboutTitle:
+          type: string
+        aboutText:
+          type: string
+        aboutMediaUrl:
+          type: string
+        aboutStat1Number:
+          type: string
+        aboutStat1Label:
+          type: string
+        aboutStat2Number:
+          type: string
+        aboutStat2Label:
+          type: string
+        aboutStat3Number:
+          type: string
+        aboutStat3Label:
+          type: string
 
     Section:
       type: object

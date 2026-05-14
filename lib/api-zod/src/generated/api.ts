@@ -33,6 +33,15 @@ export const GetSettingsResponse = zod.object({
   facebook: zod.string().nullable(),
   tiktok: zod.string().nullable(),
   footerText: zod.string().nullish(),
+  aboutTitle: zod.string().optional(),
+  aboutText: zod.string().optional(),
+  aboutMediaUrl: zod.string().optional(),
+  aboutStat1Number: zod.string().optional(),
+  aboutStat1Label: zod.string().optional(),
+  aboutStat2Number: zod.string().optional(),
+  aboutStat2Label: zod.string().optional(),
+  aboutStat3Number: zod.string().optional(),
+  aboutStat3Label: zod.string().optional(),
 });
 
 /**
@@ -53,6 +62,15 @@ export const UpdateSettingsBody = zod.object({
   facebook: zod.string().nullish(),
   tiktok: zod.string().nullish(),
   footerText: zod.string().nullish(),
+  aboutTitle: zod.string().optional(),
+  aboutText: zod.string().optional(),
+  aboutMediaUrl: zod.string().optional(),
+  aboutStat1Number: zod.string().optional(),
+  aboutStat1Label: zod.string().optional(),
+  aboutStat2Number: zod.string().optional(),
+  aboutStat2Label: zod.string().optional(),
+  aboutStat3Number: zod.string().optional(),
+  aboutStat3Label: zod.string().optional(),
 });
 
 export const UpdateSettingsResponse = zod.object({
@@ -71,6 +89,15 @@ export const UpdateSettingsResponse = zod.object({
   facebook: zod.string().nullable(),
   tiktok: zod.string().nullable(),
   footerText: zod.string().nullish(),
+  aboutTitle: zod.string().optional(),
+  aboutText: zod.string().optional(),
+  aboutMediaUrl: zod.string().optional(),
+  aboutStat1Number: zod.string().optional(),
+  aboutStat1Label: zod.string().optional(),
+  aboutStat2Number: zod.string().optional(),
+  aboutStat2Label: zod.string().optional(),
+  aboutStat3Number: zod.string().optional(),
+  aboutStat3Label: zod.string().optional(),
 });
 
 /**

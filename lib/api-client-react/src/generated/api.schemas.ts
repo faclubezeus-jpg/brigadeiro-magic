@@ -33,6 +33,15 @@ export interface SiteSettings {
   tiktok: string | null;
   /** @nullable */
   footerText?: string | null;
+  aboutTitle?: string;
+  aboutText?: string;
+  aboutMediaUrl?: string;
+  aboutStat1Number?: string;
+  aboutStat1Label?: string;
+  aboutStat2Number?: string;
+  aboutStat2Label?: string;
+  aboutStat3Number?: string;
+  aboutStat3Label?: string;
 }
 
 export interface SiteSettingsInput {
@@ -58,6 +67,15 @@ export interface SiteSettingsInput {
   tiktok?: string | null;
   /** @nullable */
   footerText?: string | null;
+  aboutTitle?: string;
+  aboutText?: string;
+  aboutMediaUrl?: string;
+  aboutStat1Number?: string;
+  aboutStat1Label?: string;
+  aboutStat2Number?: string;
+  aboutStat2Label?: string;
+  aboutStat3Number?: string;
+  aboutStat3Label?: string;
 }
 
 /**
