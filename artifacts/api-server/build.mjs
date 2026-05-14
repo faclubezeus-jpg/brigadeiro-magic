@@ -112,8 +112,13 @@ async function buildAll() {
 import __bannerPath from 'node:path';
 import __bannerUrl from 'node:url';
 
-globalThis.require = __bannerCrReq(import.meta.url);
-globalThis.__filename = __bannerUrl.fileURLToPath(import.meta.url);
+const __metaUrl = (typeof import.meta !== 'undefined' && import.meta.url) ? import.meta.url : 'file://' + __bannerPath.resolve('index.js');
+globalThis.require = __bannerCrReq(__metaUrl);
+try {
+  globalThis.__filename = __bannerUrl.fileURLToPath(__metaUrl);
+} catch {
+  globalThis.__filename = __bannerPath.resolve('index.js');
+}
 globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     `,
     },
