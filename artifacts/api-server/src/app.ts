@@ -10,7 +10,8 @@ import { logger } from "./lib/logger";
 
 const PostgresStore = connectPgSimple(session);
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Robust path handling for both local and cloud environments (Netlify)
+const __dirname = process.env.NETLIFY ? process.cwd() : path.dirname(fileURLToPath(import.meta.url));
 
 const app: Express = express();
 
