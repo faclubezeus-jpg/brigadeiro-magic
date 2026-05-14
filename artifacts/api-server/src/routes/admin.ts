@@ -16,7 +16,7 @@ router.post("/admin/login", async (req, res): Promise<void> => {
 
   const { login, password } = parsed.data;
   if (login === ADMIN_LOGIN && password === ADMIN_PASSWORD) {
-    (req.session as Record<string, unknown>)[SESSION_KEY] = true;
+    (req.session as any)[SESSION_KEY] = true;
     res.json(AdminLoginResponse.parse({ authenticated: true }));
     return;
   }
@@ -25,12 +25,12 @@ router.post("/admin/login", async (req, res): Promise<void> => {
 });
 
 router.post("/admin/logout", async (req, res): Promise<void> => {
-  (req.session as Record<string, unknown>)[SESSION_KEY] = false;
+  (req.session as any)[SESSION_KEY] = false;
   res.json({ authenticated: false });
 });
 
 router.get("/admin/me", async (req, res): Promise<void> => {
-  const authenticated = (req.session as Record<string, unknown>)[SESSION_KEY] === true;
+  const authenticated = (req.session as any)[SESSION_KEY] === true;
   if (!authenticated) {
     res.status(401).json({ authenticated: false });
     return;

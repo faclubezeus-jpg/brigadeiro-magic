@@ -1,18 +1,18 @@
 [build]
-  command = "npm run build:netlify"
-    publish = "artifacts/api-server/client"
+  command = "pnpm run build:netlify"
+  publish = "artifacts/api-server/client"
 
-    [[redirects]]
-      from = "/api/*"
-        to = "/.netlify/functions/api/:splat"
-          status = 200
+[build.environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "9.15.4"
 
-          [[redirects]]
-            from = "/*"
-              to = "/index.html"
-                status = 200
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
 
-                [build.environment]
-                  NODE_VERSION = "22"
-                    PNPM_VERSION = "11"
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
                     
