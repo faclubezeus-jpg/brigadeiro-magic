@@ -3,7 +3,10 @@ import { useCart } from "@/context/CartContext";
 import { useGetSettings } from "@workspace/api-client-react";
 
 export function CartSidebar() {
-  const { items, removeItem, updateQty, clearCart, totalItems, isOpen, closeCart, buildWhatsAppMessage } = useCart();
+  const { 
+    items, removeItem, updateQty, clearCart, totalItems, isOpen, closeCart, buildWhatsAppMessage,
+    isGift, setIsGift, recipientName, setRecipientName, giftMessage, setGiftMessage
+  } = useCart();
   const { data: settings } = useGetSettings();
 
   const handleCheckout = () => {
@@ -111,7 +114,60 @@ export function CartSidebar() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="p-4 border-t border-border space-y-3">
+              <div className="p-4 border-t border-border space-y-4">
+                {/* Gift Option */}
+                <div className="bg-primary/5 rounded-2xl p-4 border border-primary/20">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={isGift}
+                        onChange={(e) => setIsGift(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-6 bg-muted rounded-full peer peer-checked:bg-primary transition-all"></div>
+                      <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:translate-x-4"></div>
+                    </div>
+                    <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
+                      🎁 Enviar como presente?
+                    </span>
+                  </label>
+
+                  <AnimatePresence>
+                    {isGift && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 space-y-3">
+                          <div>
+                            <label className="block text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1 ml-1">Para quem é o presente?</label>
+                            <input 
+                              type="text"
+                              value={recipientName}
+                              onChange={(e) => setRecipientName(e.target.value)}
+                              placeholder="Nome do presenteado"
+                              className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1 ml-1">Mensagem de carinho</label>
+                            <textarea 
+                              value={giftMessage}
+                              onChange={(e) => setGiftMessage(e.target.value)}
+                              placeholder="Escreva uma mensagem especial..."
+                              rows={2}
+                              className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
                 <button
                   onClick={clearCart}
                   className="w-full text-xs text-muted-foreground hover:text-destructive transition-colors text-center"

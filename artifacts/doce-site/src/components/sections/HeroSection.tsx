@@ -51,19 +51,6 @@ export function HeroSection({ settings }: HeroSectionProps) {
           <source src={heroVideoUrl} type="video/mp4" />
         </video>
 
-        {/* Warm gradient overlay — keeps text readable */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `linear-gradient(
-              to bottom,
-              rgba(61,49,46,0.30) 0%,
-              rgba(235,179,185,0.22) 40%,
-              rgba(255,255,255,0.18) 70%,
-              rgba(255,255,255,0.65) 100%
-            )`,
-          }}
-        />
 
         {/* Mouse-reactive warm glow */}
         <div

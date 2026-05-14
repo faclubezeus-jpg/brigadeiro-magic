@@ -19,6 +19,12 @@ interface CartContextValue {
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
+  isGift: boolean;
+  setIsGift: (val: boolean) => void;
+  recipientName: string;
+  setRecipientName: (val: string) => void;
+  giftMessage: string;
+  setGiftMessage: (val: string) => void;
   buildWhatsAppMessage: (whatsappNumber: string, defaultMsg: string) => string;
 }
 
@@ -27,6 +33,9 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isGift, setIsGift] = useState(false);
+  const [recipientName, setRecipientName] = useState("");
+  const [giftMessage, setGiftMessage] = useState("");
 
   const addItem = useCallback((item: Omit<CartItem, "quantity">) => {
     setItems(prev => {
@@ -79,17 +88,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
       "",
       `*Total de itens:* ${totalItems}`,
       "",
-      "Aguardo confirmação e informações de entrega! 💝",
     ];
+
+    if (isGift) {
+      lines.push("*🎁 Este pedido é um PRESENTE!*");
+      if (recipientName) lines.push(`*Para:* ${recipientName}`);
+      if (giftMessage) lines.push(`*Mensagem:* "${giftMessage}"`);
+      lines.push("");
+    }
+
+    lines.push("Aguardo confirmação e informações de entrega! 💝");
 
     const message = lines.join("\n");
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-  }, [items, totalItems]);
+  }, [items, totalItems, isGift, recipientName, giftMessage]);
 
   return (
     <CartContext.Provider value={{
       items, addItem, removeItem, updateQty, clearCart,
       totalItems, isOpen, openCart, closeCart, buildWhatsAppMessage,
+      isGift, setIsGift, recipientName, setRecipientName, giftMessage, setGiftMessage
     }}>
       {children}
     </CartContext.Provider>

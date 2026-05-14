@@ -5,3 +5,4 @@ export * from "./cakes";
 export * from "./kits";
 export * from "./highlights";
 export * from "./testimonials";
+export * from "./sessions";
