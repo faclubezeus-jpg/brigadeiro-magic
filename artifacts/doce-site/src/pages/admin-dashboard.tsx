@@ -514,10 +514,7 @@ export default function AdminDashboardPage() {
     </div>
   );
 
-  if (!session?.authenticated) {
-    setLocation("/admin");
-    return null;
-  }
+  // Auth check is handled by <PrivateRoute> in App.tsx
 
   const invalidate = (qkFn: () => readonly unknown[]) => () => qc.invalidateQueries({ queryKey: [...qkFn()] });
 

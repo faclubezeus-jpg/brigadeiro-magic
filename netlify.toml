@@ -7,17 +7,21 @@
   NODE_VERSION = "22"
   PNPM_VERSION = "9.15.4"
 
+# We pre-bundle the function with esbuild (see scripts/bundle-netlify-function.mjs).
+# Netlify will serve netlify/functions/api.mjs directly.
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["pg-native", "better-sqlite3", "canvas"]
 
+# Route all /api/* traffic to the serverless function
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
 
+# SPA fallback — must be LAST
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-                    

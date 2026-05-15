@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
-    "build:netlify": "pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && node scripts/deploy-helper.mjs prepare-netlify",
+    "build:netlify": "pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && node scripts/deploy-helper.mjs prepare-netlify && node scripts/bundle-netlify-function.mjs",
     "deploy": "pnpm run push-force --filter @workspace/db && pnpm run build --filter @workspace/doce-site && pnpm run build --filter @workspace/api-server && node scripts/deploy-helper.mjs prepare-netlify",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --exclude \"@workspace/mockup-sandbox\" --filter \"./scripts\" --if-present run typecheck",

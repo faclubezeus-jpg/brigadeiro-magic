@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +9,7 @@ import AdminDashboardPage from "@/pages/admin-dashboard";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { CartProvider } from "@/context/CartContext";
 import { CartSidebar } from "@/components/CartSidebar";
+import { useAdminMe, getAdminMeQueryKey } from "@workspace/api-client-react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,12 +20,52 @@ const queryClient = new QueryClient({
   },
 });
 
+/** Redirects to /admin if not authenticated. Must be used inside QueryClientProvider. */
+function PrivateRoute({ component: Component }: { component: React.ComponentType }) {
+  const { data: session, isLoading } = useAdminMe({
+    query: { queryKey: getAdminMeQueryKey() },
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center holographic-bg">
+        <div className="text-foreground font-serif text-xl animate-pulse">Verificando acesso...</div>
+      </div>
+    );
+  }
+
+  if (!session?.authenticated) {
+    return <Redirect to="/admin" />;
+  }
+
+  return <Component />;
+}
+
+/** Redirects to /admin/dashboard if already authenticated. */
+function PublicAdminRoute({ component: Component }: { component: React.ComponentType }) {
+  const { data: session, isLoading } = useAdminMe({
+    query: { queryKey: getAdminMeQueryKey() },
+  });
+
+  if (isLoading) return null;
+
+  if (session?.authenticated) {
+    return <Redirect to="/admin/dashboard" />;
+  }
+
+  return <Component />;
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
-      <Route path="/admin" component={AdminLoginPage} />
-      <Route path="/admin/dashboard" component={AdminDashboardPage} />
+      <Route path="/admin">
+        <PublicAdminRoute component={AdminLoginPage} />
+      </Route>
+      <Route path="/admin/dashboard">
+        <PrivateRoute component={AdminDashboardPage} />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
