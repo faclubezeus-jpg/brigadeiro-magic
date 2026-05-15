@@ -9,7 +9,8 @@ import AdminDashboardPage from "@/pages/admin-dashboard";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { CartProvider } from "@/context/CartContext";
 import { CartSidebar } from "@/components/CartSidebar";
-import { useAdminMe, getAdminMeQueryKey } from "@workspace/api-client-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,8 +23,12 @@ const queryClient = new QueryClient({
 
 /** Redirects to /admin if not authenticated. Must be used inside QueryClientProvider. */
 function PrivateRoute({ component: Component }: { component: React.ComponentType }) {
-  const { data: session, isLoading } = useAdminMe({
-    query: { queryKey: getAdminMeQueryKey() },
+  const { data: session, isLoading } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session;
+    }
   });
 
   if (isLoading) {
@@ -34,7 +39,7 @@ function PrivateRoute({ component: Component }: { component: React.ComponentType
     );
   }
 
-  if (!session?.authenticated) {
+  if (!session) {
     return <Redirect to="/admin" />;
   }
 
@@ -43,13 +48,17 @@ function PrivateRoute({ component: Component }: { component: React.ComponentType
 
 /** Redirects to /admin/dashboard if already authenticated. */
 function PublicAdminRoute({ component: Component }: { component: React.ComponentType }) {
-  const { data: session, isLoading } = useAdminMe({
-    query: { queryKey: getAdminMeQueryKey() },
+  const { data: session, isLoading } = useQuery({
+    queryKey: ['session'],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      return session;
+    }
   });
 
   if (isLoading) return null;
 
-  if (session?.authenticated) {
+  if (session) {
     return <Redirect to="/admin/dashboard" />;
   }
 
