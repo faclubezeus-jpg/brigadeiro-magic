@@ -39,11 +39,17 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+import pg from "pg";
+const pool = process.env.DATABASE_URL ? new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+}) : undefined;
+
 app.use(
   session({
-    store: process.env.DATABASE_URL
+    store: pool
       ? new PostgresStore({
-        conString: process.env.DATABASE_URL,
+        pool,
         tableName: "session",
         createTableIfMissing: true,
       })
@@ -59,6 +65,7 @@ app.use(
     },
   }),
 );
+
 
 // Serve uploaded files
 const DB_PATH_U = process.env.DATABASE_PATH || path.join(process.cwd(), "sqlite.db");

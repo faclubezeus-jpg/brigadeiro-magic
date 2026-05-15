@@ -9,7 +9,9 @@ if (!databaseUrl && process.env["NODE_ENV"] === "production") {
 }
 
 // In development, fallback to a local postgres or just a dummy string if we only use migrations
-const client = postgres(databaseUrl || "postgres://postgres:postgres@localhost:5432/postgres");
+const client = postgres(databaseUrl || "postgres://postgres:postgres@localhost:5432/postgres", {
+  ssl: databaseUrl ? { rejectUnauthorized: false } : undefined,
+});
 export const db = drizzle(client, { schema });
 
 export * from "./schema";
