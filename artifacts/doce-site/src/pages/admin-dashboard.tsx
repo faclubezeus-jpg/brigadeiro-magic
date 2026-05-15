@@ -1,16 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  useAdminMe, useAdminLogout, getAdminMeQueryKey,
-  useGetSettings, useUpdateSettings, getGetSettingsQueryKey,
-  useGetSweets, useCreateSweet, useUpdateSweet, useDeleteSweet, getGetSweetsQueryKey,
-  useGetCakes, useCreateCake, useUpdateCake, useDeleteCake, getGetCakesQueryKey,
-  useGetKits, useCreateKit, useUpdateKit, useDeleteKit, getGetKitsQueryKey,
-  useGetHighlights, useCreateHighlight, useUpdateHighlight, useDeleteHighlight, getGetHighlightsQueryKey,
-  useGetTestimonials, useCreateTestimonial, useUpdateTestimonial, useDeleteTestimonial, getGetTestimonialsQueryKey,
-} from "@workspace/api-client-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 const TABS = [
   { id: "settings", label: "⚙️ Config" },
@@ -26,27 +18,21 @@ function isVideo(url: string | null | undefined) {
 }
 
 async function uploadFile(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result as string;
-      try {
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ data: base64, filename: file.name }),
-        });
-        const json = await res.json();
-        if (json.url) resolve(json.url);
-        else reject(new Error(json.error ?? "Upload failed"));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+  const filePath = `uploads/${fileName}`;
+
+  const { data, error } = await supabase.storage
+    .from('media')
+    .upload(filePath, file);
+
+  if (error) throw error;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('media')
+    .getPublicUrl(data.path);
+
+  return publicUrl;
 }
 
 function MediaPreview({ url, alt }: { url: string; alt?: string }) {
@@ -102,8 +88,22 @@ function FileUploadButton({
 }
 
 function SettingsTab() {
-  const { data: settings } = useGetSettings();
-  const updateSettings = useUpdateSettings();
+  const { data: settings } = useQuery({
+    queryKey: ['site_settings'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('site_settings').select('*').single();
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async (payload: any) => {
+      const { error } = await supabase.from('site_settings').update(payload).eq('id', 1);
+      if (error) throw error;
+    }
+  });
+
   const qc = useQueryClient();
   const [form, setForm] = useState<Record<string, string | null>>({});
   const [saved, setSaved] = useState(false);
@@ -119,9 +119,9 @@ function SettingsTab() {
     const payload = Object.fromEntries(
       Object.entries(form).map(([k, v]) => [k, v === "" ? null : v])
     );
-    updateSettings.mutate({ data: payload as never }, {
+    updateMutation.mutate(payload, {
       onSuccess: () => {
-        qc.invalidateQueries({ queryKey: getGetSettingsQueryKey() });
+        qc.invalidateQueries({ queryKey: ['site_settings'] });
         setForm({});
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
@@ -233,7 +233,7 @@ function SettingsTab() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-4">
             {textField("aboutTitle", "Título da Seção", "Sobre Nós")}
-            {textAreaField("aboutText", "Texto da História (use pulo de linha para novos parágrafos)", 8)}
+            {textAreaField("aboutText", "Texto da História", 8)}
           </div>
           <div className="space-y-3">
             <label className="block text-xs font-semibold text-foreground/70 uppercase tracking-wide">Imagem ou Vídeo (PNG/MP4)</label>
@@ -296,12 +296,11 @@ function SettingsTab() {
       </div>
 
       <button
-        data-testid="button-save-settings"
         onClick={handleSave}
-        disabled={updateSettings.isPending}
+        disabled={updateMutation.isPending}
         className="px-8 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm shadow-md hover:shadow-lg transition-all disabled:opacity-60"
       >
-        {saved ? "✓ Salvo!" : updateSettings.isPending ? "Salvando..." : "Salvar Configurações"}
+        {saved ? "✓ Salvo!" : updateMutation.isPending ? "Salvando..." : "Salvar Configurações"}
       </button>
     </div>
   );
@@ -349,6 +348,7 @@ function ItemsManager<T extends AnyItem>({
       name: item.name,
       imageUrl: item.imageUrl ?? "",
       description: item.description ?? "",
+      ...Object.fromEntries(Object.entries(item).filter(([k]) => !['id', 'name', 'imageUrl', 'description', 'visible'].includes(k)))
     });
   };
 
@@ -418,7 +418,6 @@ function ItemsManager<T extends AnyItem>({
         {items.map(item => (
           <motion.div
             key={item.id}
-            data-testid={`item-admin-${item.id}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="bg-card rounded-2xl border border-border p-4"
@@ -429,7 +428,7 @@ function ItemsManager<T extends AnyItem>({
                 <input value={formData.description ?? item.description ?? ""} onChange={e => setVal("description", e.target.value)} placeholder="Descrição" className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
                 <div className="space-y-1.5">
                   <div className="flex gap-2">
-                    <input value={formData.imageUrl ?? item.imageUrl ?? ""} onChange={e => setVal("imageUrl", e.target.value)} placeholder="URL da mídia (imagem ou vídeo)" className="flex-1 px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+                    <input value={formData.imageUrl ?? item.imageUrl ?? ""} onChange={e => setVal("imageUrl", e.target.value)} placeholder="URL da mídia" className="flex-1 px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
                     <FileUploadButton onUpload={url => setVal("imageUrl", url)} label="📎 Subir" />
                   </div>
                   {(formData.imageUrl ?? item.imageUrl) && (
@@ -438,6 +437,7 @@ function ItemsManager<T extends AnyItem>({
                     </div>
                   )}
                 </div>
+                {extraFields?.(setVal, val)}
                 <div className="flex gap-2">
                   <button onClick={() => handleUpdate(item.id)} disabled={isUpdating} className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-60">
                     {isUpdating ? "Salvando..." : "Salvar"}
@@ -470,9 +470,6 @@ function ItemsManager<T extends AnyItem>({
             )}
           </motion.div>
         ))}
-        {items.length === 0 && (
-          <div className="text-center py-10 text-muted-foreground text-sm">Nenhum item ainda. Clique em + Adicionar para começar.</div>
-        )}
       </div>
     </div>
   );
@@ -483,258 +480,121 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState("settings");
   const qc = useQueryClient();
 
-  const { data: session, isLoading } = useAdminMe({ query: { queryKey: getAdminMeQueryKey() } });
-  const logoutMutation = useAdminLogout();
+  const { data: user } = useQuery({
+    queryKey: ['auth_user'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    }
+  });
 
-  const { data: sweets = [] } = useGetSweets();
-  const { data: cakes = [] } = useGetCakes();
-  const { data: kits = [] } = useGetKits();
-  const { data: highlights = [] } = useGetHighlights();
-  const { data: testimonials = [] } = useGetTestimonials();
+  const { data: sweets = [] } = useQuery({ queryKey: ['sweets'], queryFn: async () => (await supabase.from('sweets').select('*').order('sort_order')).data });
+  const { data: cakes = [] } = useQuery({ queryKey: ['cakes'], queryFn: async () => (await supabase.from('cakes').select('*').order('sort_order')).data });
+  const { data: kits = [] } = useQuery({ queryKey: ['kits'], queryFn: async () => (await supabase.from('kits').select('*').order('sort_order')).data });
+  const { data: highlights = [] } = useQuery({ queryKey: ['highlights'], queryFn: async () => (await supabase.from('highlights').select('*').order('sort_order')).data });
+  const { data: testimonials = [] } = useQuery({ queryKey: ['testimonials'], queryFn: async () => (await supabase.from('testimonials').select('*').order('id')).data });
 
-  const createSweet = useCreateSweet();
-  const updateSweet = useUpdateSweet();
-  const deleteSweet = useDeleteSweet();
-  const createCake = useCreateCake();
-  const updateCake = useUpdateCake();
-  const deleteCake = useDeleteCake();
-  const createKit = useCreateKit();
-  const updateKit = useUpdateKit();
-  const deleteKit = useDeleteKit();
-  const createHighlight = useCreateHighlight();
-  const updateHighlight = useUpdateHighlight();
-  const deleteHighlight = useDeleteHighlight();
-  const createTestimonial = useCreateTestimonial();
-  const updateTestimonial = useUpdateTestimonial();
-  const deleteTestimonial = useDeleteTestimonial();
+  const createMutation = (table: string) => useMutation({
+    mutationFn: async (data: any) => { const { error } = await supabase.from(table).insert([data]); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: [table] })
+  });
 
-  if (isLoading) return (
-    <div className="min-h-screen flex items-center justify-center holographic-bg">
-      <div className="text-foreground font-serif text-xl animate-pulse">Carregando painel...</div>
-    </div>
-  );
+  const updateMutation = (table: string) => useMutation({
+    mutationFn: async ({ id, data }: { id: number, data: any }) => { const { error } = await supabase.from(table).update(data).eq('id', id); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: [table] })
+  });
 
-  // Auth check is handled by <PrivateRoute> in App.tsx
+  const deleteMutation = (table: string) => useMutation({
+    mutationFn: async (id: number) => { const { error } = await supabase.from(table).delete().eq('id', id); if (error) throw error; },
+    onSuccess: () => qc.invalidateQueries({ queryKey: [table] })
+  });
 
-  const invalidate = (qkFn: () => readonly unknown[]) => () => qc.invalidateQueries({ queryKey: [...qkFn()] });
-
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        qc.invalidateQueries({ queryKey: getAdminMeQueryKey() });
-        setLocation("/admin");
-      }
-    });
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setLocation("/admin");
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="glass-heavy border-b border-border sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
           <div>
             <h1 className="font-serif text-lg md:text-xl font-bold text-foreground">Painel Admin</h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">Docinho O Docinho — Área restrita</p>
+            <p className="text-xs text-muted-foreground">Brigadeiro Magic — Área restrita</p>
           </div>
-          <div className="flex items-center gap-2 md:gap-3">
-            <a href="/" target="_blank" className="text-sm text-muted-foreground hover:text-primary transition-colors hidden sm:block">
-              Ver Site ↗
-            </a>
-            <button
-              data-testid="button-logout"
-              onClick={handleLogout}
-              className="px-3 md:px-4 py-2 rounded-xl bg-destructive/10 text-destructive text-sm font-semibold hover:bg-destructive hover:text-white transition-all"
-            >
-              Sair
-            </button>
-          </div>
+          <button onClick={handleLogout} className="px-4 py-2 rounded-xl bg-destructive/10 text-destructive text-sm font-semibold hover:bg-destructive hover:text-white transition-all">Sair</button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
-        {/* Tabs - horizontal scroll on mobile */}
-        <div className="flex gap-2 mb-6 md:mb-8 overflow-x-auto pb-2 -mx-1 px-1">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
           {TABS.map(tab => (
-            <button
-              key={tab.id}
-              data-testid={`tab-${tab.id}`}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-muted text-muted-foreground hover:bg-secondary"
-              }`}
-            >
-              {tab.label}
-            </button>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap ${activeTab === tab.id ? "bg-primary text-primary-foreground shadow-md" : "bg-muted text-muted-foreground"}`}>{tab.label}</button>
           ))}
         </div>
 
-        {/* Content */}
-        <div className="bg-card rounded-3xl border border-border p-5 md:p-6 shadow-md">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-            >
-              {activeTab === "settings" && <SettingsTab />}
-
-              {activeTab === "sweets" && (
-                <ItemsManager
-                  label="🍫 Nossos Docinhos"
-                  items={sweets}
-                  onCreate={d => createSweet.mutate({ data: d as never }, { onSuccess: invalidate(getGetSweetsQueryKey) })}
-                  onUpdate={(id, d) => updateSweet.mutate({ id, data: d as never }, { onSuccess: invalidate(getGetSweetsQueryKey) })}
-                  onDelete={id => deleteSweet.mutate({ id }, { onSuccess: invalidate(getGetSweetsQueryKey) })}
-                  isCreating={createSweet.isPending}
-                  isUpdating={updateSweet.isPending}
-                  isDeleting={deleteSweet.isPending}
-                  extraFields={(setVal, val) => (
-                    <input
-                      placeholder="Preço (ex: R$ 5,00)"
-                      value={val("price")}
-                      onChange={e => setVal("price", e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  )}
-                />
-              )}
-
-              {activeTab === "cakes" && (
-                <ItemsManager
-                  label="🎂 Galeria de Bolos"
-                  items={cakes}
-                  onCreate={d => createCake.mutate({ data: d as never }, { onSuccess: invalidate(getGetCakesQueryKey) })}
-                  onUpdate={(id, d) => updateCake.mutate({ id, data: d as never }, { onSuccess: invalidate(getGetCakesQueryKey) })}
-                  onDelete={id => deleteCake.mutate({ id }, { onSuccess: invalidate(getGetCakesQueryKey) })}
-                  isCreating={createCake.isPending}
-                  isUpdating={updateCake.isPending}
-                  isDeleting={deleteCake.isPending}
-                  extraFields={(setVal, val) => (
-                    <input
-                      placeholder="Preço (ex: R$ 89,90)"
-                      value={val("price")}
-                      onChange={e => setVal("price", e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  )}
-                />
-              )}
-
-              {activeTab === "kits" && (
-                <ItemsManager
-                  label="🎁 Kits & Combos"
-                  items={kits}
-                  onCreate={d => createKit.mutate({ data: d as never }, { onSuccess: invalidate(getGetKitsQueryKey) })}
-                  onUpdate={(id, d) => updateKit.mutate({ id, data: d as never }, { onSuccess: invalidate(getGetKitsQueryKey) })}
-                  onDelete={id => deleteKit.mutate({ id }, { onSuccess: invalidate(getGetKitsQueryKey) })}
-                  isCreating={createKit.isPending}
-                  isUpdating={updateKit.isPending}
-                  isDeleting={deleteKit.isPending}
-                  extraFields={(setVal, val) => (
-                    <input
-                      placeholder="Preço (ex: R$ 89,90)"
-                      value={val("price")}
-                      onChange={e => setVal("price", e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  )}
-                />
-              )}
-
-              {activeTab === "highlights" && (
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-serif text-xl font-bold text-foreground">📸 Galeria de Destaques</h3>
-                    <button
-                      onClick={() => createHighlight.mutate({ data: { imageUrl: "https://via.placeholder.com/800x500?text=Nova+Imagem", caption: "Nova imagem", sortOrder: highlights.length, visible: true } }, { onSuccess: invalidate(getGetHighlightsQueryKey) })}
-                      className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90"
-                    >
-                      + Adicionar
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {highlights.map(h => (
-                      <div key={h.id} className="flex items-center gap-3 bg-muted/30 rounded-xl p-3 border border-border">
-                        <div className="w-20 h-14 rounded-xl border border-border overflow-hidden flex-shrink-0">
-                          <MediaPreview url={h.imageUrl} alt={h.caption ?? ""} />
-                        </div>
-                        <div className="flex-1 min-w-0 space-y-1.5">
-                          <input
-                            defaultValue={h.caption ?? ""}
-                            onBlur={e => updateHighlight.mutate({ id: h.id, data: { caption: e.target.value } }, { onSuccess: invalidate(getGetHighlightsQueryKey) })}
-                            placeholder="Legenda"
-                            className="w-full bg-transparent text-sm text-foreground focus:outline-none border-b border-border"
-                          />
-                          <div className="flex gap-2 items-center">
-                            <input
-                              defaultValue={h.imageUrl}
-                              onBlur={e => updateHighlight.mutate({ id: h.id, data: { imageUrl: e.target.value } }, { onSuccess: invalidate(getGetHighlightsQueryKey) })}
-                              placeholder="URL (PNG, JPG ou MP4)"
-                              className="flex-1 bg-transparent text-xs text-muted-foreground focus:outline-none"
-                            />
-                            <FileUploadButton
-                              onUpload={url => updateHighlight.mutate({ id: h.id, data: { imageUrl: url } }, { onSuccess: invalidate(getGetHighlightsQueryKey) })}
-                              label="📎"
-                              className="text-[11px] py-1 px-2"
-                            />
-                          </div>
-                        </div>
-                        <div className="flex flex-col gap-1.5 flex-shrink-0">
-                          <button onClick={() => updateHighlight.mutate({ id: h.id, data: { visible: !h.visible } }, { onSuccess: invalidate(getGetHighlightsQueryKey) })} className={`text-xs px-2 py-1 rounded-full ${h.visible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-500"}`}>
-                            {h.visible ? "Visível" : "Oculto"}
-                          </button>
-                          <button onClick={() => deleteHighlight.mutate({ id: h.id }, { onSuccess: invalidate(getGetHighlightsQueryKey) })} className="text-xs px-2 py-1 rounded-full bg-destructive/10 text-destructive">
-                            Excluir
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    {highlights.length === 0 && <div className="text-center py-8 text-muted-foreground text-sm">Adicione imagens ou vídeos à galeria.</div>}
-                  </div>
+        <div className="bg-card rounded-3xl border border-border p-6 shadow-md">
+          {activeTab === "settings" && <SettingsTab />}
+          {activeTab === "sweets" && (
+            <ItemsManager
+              label="🍫 Nossos Docinhos"
+              items={sweets || []}
+              onCreate={d => createMutation('sweets').mutate(d)}
+              onUpdate={(id, data) => updateMutation('sweets').mutate({ id, data })}
+              onDelete={id => deleteMutation('sweets').mutate(id)}
+              isCreating={false} isUpdating={false} isDeleting={false}
+              extraFields={(setVal, val) => <input placeholder="Preço" value={val("price")} onChange={e => setVal("price", e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:ring-2 focus:ring-primary" />}
+            />
+          )}
+          {activeTab === "cakes" && (
+            <ItemsManager
+              label="🎂 Galeria de Bolos"
+              items={cakes || []}
+              onCreate={d => createMutation('cakes').mutate(d)}
+              onUpdate={(id, data) => updateMutation('cakes').mutate({ id, data })}
+              onDelete={id => deleteMutation('cakes').mutate(id)}
+              isCreating={false} isUpdating={false} isDeleting={false}
+              extraFields={(setVal, val) => <input placeholder="Preço" value={val("price")} onChange={e => setVal("price", e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:ring-2 focus:ring-primary" />}
+            />
+          )}
+          {activeTab === "kits" && (
+            <ItemsManager
+              label="🎁 Kits & Combos"
+              items={kits || []}
+              onCreate={d => createMutation('kits').mutate(d)}
+              onUpdate={(id, data) => updateMutation('kits').mutate({ id, data })}
+              onDelete={id => deleteMutation('kits').mutate(id)}
+              isCreating={false} isUpdating={false} isDeleting={false}
+              extraFields={(setVal, val) => <input placeholder="Preço" value={val("price")} onChange={e => setVal("price", e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:ring-2 focus:ring-primary" />}
+            />
+          )}
+          {activeTab === "highlights" && (
+            <ItemsManager
+              label="📸 Destaques"
+              items={highlights || []}
+              onCreate={d => createMutation('highlights').mutate(d)}
+              onUpdate={(id, data) => updateMutation('highlights').mutate({ id, data })}
+              onDelete={id => deleteMutation('highlights').mutate(id)}
+              isCreating={false} isUpdating={false} isDeleting={false}
+              extraFields={(setVal, val) => (
+                <div className="space-y-2">
+                  <input placeholder="Texto do Botão" value={val("buttonText")} onChange={e => setVal("buttonText", e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:ring-2 focus:ring-primary" />
+                  <input placeholder="Link (URL)" value={val("linkUrl")} onChange={e => setVal("linkUrl", e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:ring-2 focus:ring-primary" />
                 </div>
               )}
-
-              {activeTab === "testimonials" && (
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <h3 className="font-serif text-xl font-bold text-foreground">💬 Depoimentos</h3>
-                    <button
-                      onClick={() => createTestimonial.mutate({ data: { name: "Nome do Cliente", text: "Escreva o depoimento aqui...", visible: true, sortOrder: testimonials.length } }, { onSuccess: invalidate(getGetTestimonialsQueryKey) })}
-                      className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90"
-                    >
-                      + Adicionar
-                    </button>
-                  </div>
-                  <div className="space-y-4">
-                    {testimonials.map(t => (
-                      <div key={t.id} className="bg-muted/30 rounded-2xl p-4 border border-border">
-                        <div className="flex items-center gap-3 mb-3">
-                          <input
-                            defaultValue={t.name}
-                            onBlur={e => updateTestimonial.mutate({ id: t.id, data: { name: e.target.value } }, { onSuccess: invalidate(getGetTestimonialsQueryKey) })}
-                            className="font-semibold text-foreground text-sm bg-transparent border-b border-border focus:outline-none flex-1"
-                          />
-                          <button onClick={() => updateTestimonial.mutate({ id: t.id, data: { visible: !t.visible } }, { onSuccess: invalidate(getGetTestimonialsQueryKey) })} className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ${t.visible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-500"}`}>{t.visible ? "Visível" : "Oculto"}</button>
-                          <button onClick={() => deleteTestimonial.mutate({ id: t.id }, { onSuccess: invalidate(getGetTestimonialsQueryKey) })} className="text-xs px-2 py-1 rounded-full bg-destructive/10 text-destructive flex-shrink-0">Excluir</button>
-                        </div>
-                        <textarea
-                          defaultValue={t.text}
-                          onBlur={e => updateTestimonial.mutate({ id: t.id, data: { text: e.target.value } }, { onSuccess: invalidate(getGetTestimonialsQueryKey) })}
-                          className="w-full text-muted-foreground text-sm bg-transparent border border-border rounded-xl p-2 focus:outline-none resize-none"
-                          rows={3}
-                        />
-                      </div>
-                    ))}
-                    {testimonials.length === 0 && <div className="text-center py-8 text-muted-foreground text-sm">Adicione depoimentos de clientes.</div>}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+            />
+          )}
+          {activeTab === "testimonials" && (
+            <ItemsManager
+              label="💬 Depoimentos"
+              items={testimonials || []}
+              onCreate={d => createMutation('testimonials').mutate(d)}
+              onUpdate={(id, data) => updateMutation('testimonials').mutate({ id, data })}
+              onDelete={id => deleteMutation('testimonials').mutate(id)}
+              isCreating={false} isUpdating={false} isDeleting={false}
+              extraFields={(setVal, val) => <input placeholder="Papel/Cargo" value={val("role")} onChange={e => setVal("role", e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm focus:ring-2 focus:ring-primary" />}
+            />
+          )}
         </div>
       </div>
     </div>
