@@ -40,10 +40,17 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 import pg from "pg";
-const pool = process.env.DATABASE_URL ? new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+let dbUrl = process.env.DATABASE_URL;
+if (dbUrl) {
+  // Remove sslmode=require so it doesn't override the explicit ssl object
+  dbUrl = dbUrl.replace("?sslmode=require", "").replace("&sslmode=require", "");
+}
+const pool = dbUrl ? new pg.Pool({
+  connectionString: dbUrl,
   ssl: { rejectUnauthorized: false }
 }) : undefined;
+
+
 
 app.use(
   session({
