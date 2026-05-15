@@ -39,6 +39,8 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+process.env.PGSSLMODE = "no-verify";
+
 import pg from "pg";
 let dbUrl = process.env.DATABASE_URL;
 if (dbUrl) {
